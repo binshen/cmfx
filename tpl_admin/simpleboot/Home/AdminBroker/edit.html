@@ -48,10 +48,10 @@
 									<td>状态:</td>
 									<td>
 										<select id="status" name="status">
-											<php>$selected=$status==1?"selected":"";</php>
-											<option value="{$vo.id}" {$selected}>正常</option>
-											<php>$selected=$status==0?"selected":"";</php>
-											<option value="{$vo.id}" {$selected}>停用</option>
+											<php>$selected=isset($status)&&$status==1?"selected":"";</php>
+											<option value="1" {$selected}>正常</option>
+											<php>$selected=isset($status)&&$status==0?"selected":"";</php>
+											<option value="0" {$selected}>停用</option>
 										</select>
 										<span class="must_red">*</span>
 									</td>
