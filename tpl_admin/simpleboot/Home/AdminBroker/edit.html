@@ -23,7 +23,7 @@
 								<tr>
 									<td>等级:</td>
 									<td>
-										<select id="rank" name="rank_id">
+										<select id="rank" name="rank_id" onchange="rank_change(this);">
 											<volist name="rankList" id="vo">
 												<php>$selected=$vo['id']===$rank_id?"selected":"";</php>
 												<option value="{$vo.id}" {$selected}>{$vo.name}</option>
@@ -32,10 +32,10 @@
 										<span class="must_red">*</span>
 									</td>
 								</tr>
-								<tr>
+								<tr id="parent_id_tr">
 									<td>上级:</td>
 									<td>
-										<select id="parent_id" name="parent_id">
+										<select id="parent_id" name="parent_id" >
 											<volist name="managerList" id="vo" key="k">
 												<php>$selected=$k===$parent_id?"selected":"";</php>
 												<option value="{$k}" {$selected}>{$vo}</option>
@@ -68,5 +68,17 @@
 		</form>
 	</div>
 	<script type="text/javascript" src="__ROOT__/statics/js/common.js"></script>
+	<script>
+	function rank_change(obj){
+		if($(obj).val() == '6'){
+			$("#parent_id_tr").hide();
+		}else{
+			$("#parent_id_tr").show();
+		}
+	}
+	<php>if($rank_id == 6):</php>
+	$("#parent_id_tr").hide();
+	<php>endif;</php>
+	</script>
 </body>
 </html>
