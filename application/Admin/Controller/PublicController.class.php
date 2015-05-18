@@ -43,7 +43,7 @@ class PublicController extends AdminbaseController {
     		$this->error(L('PASSWORD_REQUIRED'));
     	}
 /*    	$verrify = I("post.verify");
-    	if(empty($verrify)){
+    	if(empty($verrify)){      fdgdggdfgdf
     		$this->error(L('CAPTCHA_REQUIRED'));
     	}*/
     	//验证码
