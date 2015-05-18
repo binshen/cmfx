@@ -20,6 +20,8 @@ class AdminBrokerController extends AdminbaseController {
             ->join('sd_rank ON sd_broker.rank_id = sd_rank.id')
             ->field('sd_broker.*, sd_rank.name AS rank')
             ->select();
+        
+        $this->assign('managerList', $this->getManagerList());
         $this->assign('brokerList', $brokerList);
         
         $this->display();
@@ -29,6 +31,7 @@ class AdminBrokerController extends AdminbaseController {
         
         $rankList = $this->RankDao->select();
         $this->assign('rankList', $rankList);
+        $this->assign('managerList', $this->getManagerList());
         
         $this->display('AdminBroker:edit');
     }
@@ -41,6 +44,8 @@ class AdminBrokerController extends AdminbaseController {
         
         $rankList = $this->RankDao->select();
         $this->assign('rankList', $rankList);
+        
+        $this->assign('managerList', $this->getManagerList());
         
         $this->display();
     }
@@ -89,5 +94,18 @@ class AdminBrokerController extends AdminbaseController {
                 }
             }
         }
+    }
+    
+    private function getManagerList() {
+        
+        $managerList = array();
+        $managers = $this->Dao
+            ->field('id, name')
+            ->where('rank_id = 6')
+            ->select();
+        foreach ($managers as $m) {
+            $managerList[$m['id']] = $m['name'];
+        }
+        return $managerList;
     }
 }

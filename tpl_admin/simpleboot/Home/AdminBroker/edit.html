@@ -32,6 +32,30 @@
 										<span class="must_red">*</span>
 									</td>
 								</tr>
+								<tr>
+									<td>上级:</td>
+									<td>
+										<select id="parent_id" name="parent_id">
+											<volist name="managerList" id="vo" key="k">
+												<php>$selected=$k===$parent_id?"selected":"";</php>
+												<option value="{$k}" {$selected}>{$vo}</option>
+											</volist>
+										</select>
+										<span class="must_red">*</span>
+									</td>
+								</tr>
+								<tr>
+									<td>状态:</td>
+									<td>
+										<select id="status" name="status">
+											<php>$selected=$status==1?"selected":"";</php>
+											<option value="{$vo.id}" {$selected}>正常</option>
+											<php>$selected=$status==0?"selected":"";</php>
+											<option value="{$vo.id}" {$selected}>停用</option>
+										</select>
+										<span class="must_red">*</span>
+									</td>
+								</tr>
 							</tbody>
 						</table>
 		          	</div>
