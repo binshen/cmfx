@@ -15,7 +15,9 @@ class IndexController extends HomeBaseController {
 	
     //首页
 	public function index() {
-    	$this->display(":index");
+	    
+    	//$this->display(":index");
+    	$this->redirect('/index.php?g=admin');
     }   
 
 }
