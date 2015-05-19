@@ -15,15 +15,18 @@ class AdminBrokerController extends AdminbaseController {
     }
     
     function index(){
-        
+    	$count=$this->Dao->count();
+    	$page = $this->page($count, 20);
+    	
         $brokerList = $this->Dao
             ->join('sd_rank ON sd_broker.rank_id = sd_rank.id')
             ->field('sd_broker.*, sd_rank.name AS rank')
+            ->limit($page->firstRow . ',' . $page->listRows)
             ->select();
         
         $this->assign('managerList', $this->getManagerList());
         $this->assign('brokerList', $brokerList);
-        
+        $this->assign("page", $page->show('Admin'));
         $this->display();
     }
     
