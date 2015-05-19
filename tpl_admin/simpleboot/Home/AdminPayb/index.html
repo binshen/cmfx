@@ -1,0 +1,73 @@
+<admintpl file="header" />
+<body class="J_scroll_fixed">
+<div class="wrap J_check_wrap">
+  	<ul class="nav nav-tabs">
+     	<li class="active"><a href="{:U('AdminPayb/index')}">应发列表（业务员）</a></li>
+     	<li><a href="{:U('AdminPayb/edit')}">应发详情（业务员）</a></li>
+  	</ul>
+  	<form class="J_ajaxForm" action="" method="post">
+      	<table class="table table-hover table-bordered table-list">
+          	<thead>
+	          	<tr>
+	            	<th width="16"><label><input type="checkbox" class="J_check_all" data-direction="x" data-checklist="J_check_x"></label></th>
+	            	<th width="100">ID</th>
+	            	<th>楼盘</th>
+	            	<th>月份</th>
+	            	<th>应付总额</th>
+	            	<th>已付总额</th>
+	            	<th>未付总额</th>
+	            	<th>状态</th>
+	            	<th width="150">操作</th>
+	          	</tr>
+	      	</thead>
+          	<foreach name="brokerList" item="vo">
+	        	<tr>
+		            <td><input type="checkbox" class="J_check" data-yid="J_check_y" data-xid="J_check_x" name="ids[]" value="{$vo.id}"></td>
+		            <td><a>{$vo.id}</a></td>
+		            <td>{$vo.pid}</td>
+		            <td>{$vo.tel}</td>
+		            <td>{$vo.rank}</td>
+		            <td>
+		            	<php>
+		            		if($vo['status'] == 1) {
+		            			echo "<font color='green'>已完结</font>";
+		            		} else {
+		            			echo "<font color='red'>未完结</font>";
+		            		}
+		            	</php>
+		            </td>
+		            <td>
+		            	<if condition="$vo.rank_id eq 6 ">
+		            		无
+						<else />
+							{$managerList[$vo['parent_id']]}
+						</if>
+		            </td>
+		            <td>
+		            	<a href="{:U('AdminBroker/edit',array('id'=>$vo['id']))}">修改</a>
+		            	|
+		            	<a href="{:U('AdminBroker/delete',array('id'=>$vo['id']))}" class="J_ajax_del" >删除</a>
+					</td>
+	          	</tr>
+          	</foreach>
+		</table>
+		<div class="table-actions">
+			<button class="btn btn-primary btn-small J_ajax_submit_btn" type="submit" data-action="{:U('AdminBroker/delete')}" data-subcheck="true" data-msg="你确定删除吗？">删除</button>
+		</div>
+ 		<div class="pagination">{$Page}</div>
+  	</form>
+</div>
+<script src="__ROOT__/statics/js/common.js"></script>
+<script>
+setCookie('refersh_time', 0);
+function refersh_window() {
+    var refersh_time = getCookie('refersh_time');
+    if (refersh_time == 1) {
+        window.location.reload();
+    }
+}
+setInterval(function(){
+	refersh_window()
+}, 2000);
+</script>
+</body>

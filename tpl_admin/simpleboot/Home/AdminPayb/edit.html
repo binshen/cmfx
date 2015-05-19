@@ -1,0 +1,101 @@
+<admintpl file="header" />
+<body class="J_scroll_fixed">
+	<div class="wrap J_check_wrap">
+		<ul class="nav nav-tabs">
+	     	<li class="active"><a href="{:U('AdminPayb/edit')}">应发详情（业务员）</a></li>
+	  	</ul>
+		<form class="form-horizontal J_ajaxForm" action="{:u('AdminBroker/edit_post')}" method="post">
+		 	<input type="hidden" name="id" value="{$id}" />
+		 	<table class="table table-hover table-bordered table-list">
+          	<thead>
+          		<tr>
+	            	<th colspan="6"><span style="color:red;">白鹭湾-201503</span></th>
+	          	</tr>
+	          	<tr>
+	            	<th>业务员</th>
+	            	<th width="100">级别</th>
+	            	<th width="100">手机</th>
+	            	<th width="100">应付</th>
+	            	<th width="100">已付</th>
+	            	<th width="100">本次实付</th>
+	          	</tr>
+	      	</thead>
+        	<tr>
+        		<td>AAA</td>
+        		<td>普通</td>
+        		<td>150522394829</td>
+        		<td><font color="green" size="3">30000</font></td>
+        		<td><font color="red" size="3">10000</font></td>
+        		<td><input type="text" name="pay[]" style="height:14px;"></td>
+          	</tr>
+          	<tr>
+        		<td>AAA</td>
+        		<td>普通</td>
+        		<td>150522394829</td>
+        		<td><font color="green" size="3">30000</font></td>
+        		<td><font color="red" size="3">10000</font></td>
+        		<td><input type="text" name="pay[]" style="height:14px;"></td>
+          	</tr>
+          	<tr>
+        		<td>AAA</td>
+        		<td>普通</td>
+        		<td>150522394829</td>
+        		<td><font color="green" size="3">30000</font></td>
+        		<td><font color="red" size="3">10000</font></td>
+        		<td><input type="text" name="pay[]" style="height:14px;"></td>
+          	</tr>
+          	<tr>
+        		<td>AAA</td>
+        		<td>普通</td>
+        		<td>150522394829</td>
+        		<td><font color="green" size="3">30000</font></td>
+        		<td><font color="red" size="3">10000</font></td>
+        		<td><input type="text" name="pay[]" style="height:14px;"></td>
+          	</tr>
+          	
+		</table>
+			<div class="form-actions">
+				<button class="btn btn-primary" type="submit" onclick="return check_input();">提交</button>
+				<a class="btn" href="{:U('AdminPayb/index')}">返回</a>
+			</div>
+		</form>
+	</div>
+	<script type="text/javascript" src="__ROOT__/statics/js/common.js"></script>
+	<script>
+		function check_input(){
+			var err = 0;
+			$("[name='pay[]']").each(function(){
+				all = $(this).parent().prev().prev().find('font').html();
+				payd = $(this).parent().prev().find('font').html();
+				if(isNaN($(this).val())){
+					var d = dialog({
+					    align: 'bottom',
+					    content: '请填写正确的数字!',
+					    quickClose: true
+					});
+					d.show(this);
+					err++;
+					return false;
+				}
+				if(parseFloat($(this).val()) + parseFloat(payd) > parseFloat(all)){
+					var d = dialog({
+					    align: 'bottom',
+					    content: '已付+本次付款不能大于应付',
+					    quickClose: true
+					});
+					d.show(this);
+					err++;
+					return false;
+				}
+				
+
+			});
+			
+			if(err > 0){
+				return false;
+			}
+			
+		}
+	</script>
+</body>
+</html>
