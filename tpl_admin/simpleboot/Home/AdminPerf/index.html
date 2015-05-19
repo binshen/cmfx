@@ -1,0 +1,74 @@
+<admintpl file="header" />
+<body class="J_scroll_fixed">
+<div class="wrap J_check_wrap">
+  	<ul class="nav nav-tabs">
+     	<li class="active"><a href="{:U('AdminPerf/index')}">业绩查看</a></li>
+     	<li><a href="{:U('AdminPerf/add')}">业绩录入</a></li>
+  	</ul>
+  	<form class="well form-search" method="post" id="cid_form" action="{:U('AdminPerf/index')}">
+			<div class="search_type cc mb10">
+				<div class="mb10">
+					选择楼盘：
+					<select class="select_2" name="project" id="project">
+						<option value="">- 请选择楼盘 -</option>
+						<volist name="projectList" id="vo">
+							<option value="{$vo.id}">{$vo.name}</option>
+						</volist>
+					</select>&nbsp;&nbsp;
+					输入月份：
+					<input type="text" name="date" id="date" class="input" style="width:80px;"/>&nbsp;&nbsp;
+					<input class="btn btn-primary btn-big" type="submit" value="查询">
+				</div>
+			</div>
+		</form>
+  	<form class="J_ajaxForm" action="" method="post">
+      	<table class="table table-hover table-bordered table-list">
+          	<thead>
+	          	<tr>
+	            	<th width="16"><label><input type="checkbox" class="J_check_all" data-direction="x" data-checklist="J_check_x"></label></th>
+	            	<th width="100">ID</th>
+	            	<th>楼盘</th>
+	            	<th>房号</th>
+	            	<th>成交价</th>
+	            	<th>业绩</th>
+	            	<th>月份</th>
+	            	<th>业务员</th>
+	            	<th width="150">操作</th>
+	          	</tr>
+	      	</thead>
+          	<foreach name="perfList" item="vo">
+	        	<tr>
+		            <td><input type="checkbox" class="J_check" data-yid="J_check_y" data-xid="J_check_x" name="ids[]" value="{$vo.id}"></td>
+		            <td>{$vo.id}</td>
+		            <td>{$vo.pname}</td>
+		            <td>{$vo.num}</td>
+		            <td>{$vo.total}</td>
+		            <td>{$vo.perf}</td>
+		            <td>{$vo.date}</td>
+		            <td>查看详细</td>
+		            <td>
+		            	<a href="{:U('AdminPerf/delete',array('id'=>$vo['id']))}" class="J_ajax_del" >删除</a>
+					</td>
+	          	</tr>
+          	</foreach>
+		</table>
+		<div class="table-actions">
+			<button class="btn btn-primary btn-small J_ajax_submit_btn" type="submit" data-action="{:U('AdminPerf/delete')}" data-subcheck="true" data-msg="你确定删除吗？">删除</button>
+		</div>
+ 		<div class="pagination">{$Page}</div>
+  	</form>
+</div>
+<script src="__ROOT__/statics/js/common.js"></script>
+<script>
+setCookie('refersh_time', 0);
+function refersh_window() {
+    var refersh_time = getCookie('refersh_time');
+    if (refersh_time == 1) {
+        window.location.reload();
+    }
+}
+setInterval(function(){
+	refersh_window()
+}, 2000);
+</script>
+</body>
