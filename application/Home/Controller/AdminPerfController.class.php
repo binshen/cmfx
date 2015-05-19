@@ -7,6 +7,7 @@ class AdminPerfController extends AdminbaseController {
     protected $Dao;
     protected $PerfBrokerDao;
     protected $ProjectDao;
+    protected $BrokerDao;
     
     function _initialize() {
     
@@ -14,6 +15,7 @@ class AdminPerfController extends AdminbaseController {
         $this->Dao = D("Home/Perf");
         $this->PerfBrokerDao = D("Home/PerfBroker");
         $this->ProjectDao = D("Home/Project");
+        $this->BrokerDao = D("Home/Broker");
     }
     
     function index(){
@@ -47,11 +49,30 @@ class AdminPerfController extends AdminbaseController {
         
         $this->assign("page", $page->show('Admin'));
         
-        $projectList = $this->ProjectDao->select();
+        $projectList = $this->ProjectDao->order('name')->select();
         $this->assign('projectList', $projectList);
         
         $this->assign('perfList', $perfList);
     
+        $this->display();
+    }
+    
+    function add() {
+        
+        $projectList = $this->ProjectDao->order('name')->select();
+        $this->assign('projectList', $projectList);
+        
+        $brokerList = $this->BrokerDao->order('name')->select();
+        $this->assign('brokerList', $brokerList);
+        
+        $this->display("AdminPerf:edit");
+    }
+    
+    function add_broker() {
+        
+        $brokerList = $this->BrokerDao->order('name')->select();
+        $this->assign('brokerList', $brokerList);
+        
         $this->display();
     }
     

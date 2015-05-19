@@ -3,7 +3,7 @@
 <div class="wrap J_check_wrap">
   	<ul class="nav nav-tabs">
      	<li class="active"><a href="{:U('AdminPerf/index')}">业绩查看</a></li>
-     	<li><a href="{:U('AdminPerf/add')}">业绩录入</a></li>
+     	<li><a href="{:U('AdminPerf/add')}" class="J_dialog">业绩录入</a></li>
   	</ul>
   	<form class="well form-search" method="post" id="cid_form" action="{:U('AdminPerf/index')}">
 			<div class="search_type cc mb10">
@@ -18,7 +18,7 @@
 					</select>&nbsp;&nbsp;
 					输入月份：
 					<input type="text" name="date" id="date" class="input" style="width:80px;" value="{$date}" />&nbsp;&nbsp;
-					<input class="btn btn-primary btn-big" type="submit" value="查询">
+					<input class="btn btn-primary btn-big" type="submit" value="搜索">
 					<input class="btn btn-primary btn-big" type="button" value="清除" id="btnClear">
 				</div>
 			</div>
