@@ -29,13 +29,23 @@ class AdminPerfController extends AdminbaseController {
             if(!empty($date)) {
                 $map['date'] = $date;
             }
+            
+            $this->assign('project', $project);
+            $this->assign('date', $date);
         }
+        
+        $count = $this->Dao->where($map)->count();
+        $page = $this->page($count, 20);
         
         $perfList = $this->Dao
             ->join("sd_project ON sd_project.id = sd_perf.pid")
             ->field("sd_perf.*, sd_project.name AS pname")
             ->where($map)
+            ->order("sd_perf.date DESC")
+            ->limit($page->firstRow . ',' . $page->listRows)
             ->select();
+        
+        $this->assign("page", $page->show('Admin'));
         
         $projectList = $this->ProjectDao->select();
         $this->assign('projectList', $projectList);
