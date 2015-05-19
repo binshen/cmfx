@@ -36,17 +36,6 @@ class AdminPerfController extends AdminbaseController {
             ->field("sd_perf.*, sd_project.name AS pname")
             ->where($map)
             ->select();
-
-//         $pidList = array();
-//         foreach ($perfList as $p) {
-//             $pidList[] = $p['id'];
-//         }
-//         $map['sd_perf_broker.pid'] = array("IN", implode(",", $pidList));
-//         $pbList = $this->PerfBrokerDao
-//             ->join("sd_broker ON sd_broker.id = sd_perf_broker.bid")
-//             ->field("sd_perf_broker.*, sd_broker.name AS bname")
-//             ->where($map)
-//             ->select();
         
         $projectList = $this->ProjectDao->select();
         $this->assign('projectList', $projectList);
@@ -54,5 +43,17 @@ class AdminPerfController extends AdminbaseController {
         $this->assign('perfList', $perfList);
     
         $this->display();
+    }
+    
+    function getBroker() {
+        
+        $id = I('post.id', 0 , 'intval');
+        $pbList = $this->PerfBrokerDao
+            ->join("sd_broker ON sd_broker.id = sd_perf_broker.bid")
+            ->field("sd_perf_broker.*, sd_broker.name AS bname")
+            ->where('sd_perf_broker.pid=' . $id)
+            ->select();
+        
+        echo json_encode($pbList);
     }
 }
