@@ -62,7 +62,7 @@ class AdminPerfController extends AdminbaseController {
         $projectList = $this->ProjectDao->order('name')->select();
         $this->assign('projectList', $projectList);
         
-        $brokerList = $this->BrokerDao->order('name')->select();
+        $brokerList = $this->BrokerDao->where('status=1')->order('name')->select();
         $this->assign('brokerList', $brokerList);
         
         $this->display("AdminPerf:edit");
