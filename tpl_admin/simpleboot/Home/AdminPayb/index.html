@@ -3,7 +3,6 @@
 <div class="wrap J_check_wrap">
   	<ul class="nav nav-tabs">
      	<li class="active"><a href="{:U('AdminPayb/index')}">应发列表（业务员）</a></li>
-     	<li><a href="{:U('AdminPayb/edit')}">应发详情（业务员）</a></li>
   	</ul>
   	<form class="J_ajaxForm" action="" method="post">
       	<table class="table table-hover table-bordered table-list">
@@ -20,16 +19,21 @@
 	            	<th width="150">操作</th>
 	          	</tr>
 	      	</thead>
-          	<foreach name="brokerList" item="vo">
+          	<foreach name="paybList" item="vo">
 	        	<tr>
 		            <td><input type="checkbox" class="J_check" data-yid="J_check_y" data-xid="J_check_x" name="ids[]" value="{$vo.id}"></td>
 		            <td><a>{$vo.id}</a></td>
-		            <td>{$vo.pid}</td>
-		            <td>{$vo.tel}</td>
-		            <td>{$vo.rank}</td>
+		            <td>{$vo.name}</td>
+		            <td>{$vo.date}</td>
+		            <td>{$vo.pay}</td>
+		            <td>{$vo.payd}</td>
+		            <td>
+		            	<php>$paid = (int)$vo['pay'] - (int)$vo['payd'];</php>
+		            	{$paid}		            	
+		            </td>
 		            <td>
 		            	<php>
-		            		if($vo['status'] == 1) {
+		            		if($vo['status'] == 2) {
 		            			echo "<font color='green'>已完结</font>";
 		            		} else {
 		            			echo "<font color='red'>未完结</font>";
@@ -37,16 +41,8 @@
 		            	</php>
 		            </td>
 		            <td>
-		            	<if condition="$vo.rank_id eq 6 ">
-		            		无
-						<else />
-							{$managerList[$vo['parent_id']]}
-						</if>
-		            </td>
-		            <td>
-		            	<a href="{:U('AdminBroker/edit',array('id'=>$vo['id']))}">修改</a>
-		            	|
-		            	<a href="{:U('AdminBroker/delete',array('id'=>$vo['id']))}" class="J_ajax_del" >删除</a>
+		            	<a href="{:U('AdminPayb/edit',array('id'=>$vo['id']))}">录入</a>
+
 					</td>
 	          	</tr>
           	</foreach>
