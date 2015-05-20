@@ -1393,7 +1393,7 @@ function sp_check_verify_code(){
 function getBrokerageByRank($rank_id, $total) {
 
     $result = 0;
-    switch ($rank_id)
+    switch (intval($rank_id))
     {
         case 1:
             if($total <= 15000) {

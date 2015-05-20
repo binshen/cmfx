@@ -87,4 +87,13 @@ class AdminPerfController extends AdminbaseController {
         
         echo json_encode($pbList);
     }
+    
+    function get_calculated_perf() {
+        
+        $total = I('post.total');
+        $bid = I('post.id');
+        $broker = $this->BrokerDao->where('id=' . $bid)->find();
+        $rank_id = $broker['rank_id'];
+        echo getBrokerageByRank($rank_id, $total);
+    }
 }
