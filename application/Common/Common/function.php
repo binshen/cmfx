@@ -1386,3 +1386,41 @@ function sp_check_verify_code(){
 	$verify = new \Think\Verify();
 	return $verify->check($_REQUEST['verify'], "");
 }
+
+/**
+ * 计算业务员佣金
+ */
+function getBrokerageByRank($rank_id, $total) {
+
+    $result = 0;
+    switch ($rank_id)
+    {
+        case 1:
+            if($total <= 15000) {
+                $result = $total * 0.20;
+            } else if ($total <= 25000) {
+                //$result = 15000 * 0.20 + ($total - 15000) * 0.25;
+                $result = $total * 0.25 - 750;
+            } else if ($total <= 35000) {
+                //$result = 15000 * 0.20 + (25000 - 15000) * 0.25 + ($total - 25000) * 0.30;
+                $result = total * 0.30 - 2000;
+            } else {
+                //$result = 15000 * 0.20 + (25000 - 15000) * 0.25 + (35000 - 25000) * 0.30 + ($total - 35000) * 0.45;
+                $result = total * 0.45 - 7250;
+            }
+            break;
+        case 2:
+        case 3:
+            $result = $total * 0.50;
+            break;
+        case 4:
+            $result = $total * 0.55;
+            break;
+        case 5:
+            $result = $total * 0.60;
+            break;
+        default:
+            break;
+    }
+    return $result;
+}
