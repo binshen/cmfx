@@ -78,7 +78,9 @@ class AdminPaybController extends AdminbaseController {
 		->find();
 		
 		if($res['payd'] >= $res['pay']){
-			$this->Daob->where('id='.$id)->data(array('status'=>2))->save();
+			$this->Dao->where('id='.$id)->data(array('status'=>2))->save();
+		}else{
+			$this->Dao->where('id='.$id)->data(array('status'=>1))->save();
 		}
 		
 		

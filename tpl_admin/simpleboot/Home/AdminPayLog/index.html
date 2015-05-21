@@ -1,0 +1,45 @@
+<admintpl file="header" />
+<body class="J_scroll_fixed">
+<div class="wrap J_check_wrap">
+  	<ul class="nav nav-tabs">
+     	<li class="active"><a href="{:U('AdminPayb/index')}">支付日志（业务员）</a></li>
+  	</ul>
+  	<form class="J_ajaxForm" action="" method="post">
+      	<table class="table table-hover table-bordered table-list">
+          	<thead>
+	          	<tr>
+	            	<th>业务员</th>
+	            	<th>楼盘</th>
+	            	<th>月份</th>
+	            	<th>金额</th>
+	            	<th>付款时间</th>
+	          	</tr>
+	      	</thead>
+          	<foreach name="payLogList" item="vo">
+	        	<tr>
+		            <td>{$vo.bname}</td>
+		            <td>{$vo.pname}</td>
+		            <td>{$vo.date}</td>
+		            <td>{$vo.pay}</td>
+		            <td>{$vo.cdate}</td>
+		            
+	          	</tr>
+          	</foreach>
+		</table>
+ 		<div class="pagination">{$page}</div>
+  	</form>
+</div>
+<script src="__ROOT__/statics/js/common.js"></script>
+<script>
+setCookie('refersh_time', 0);
+function refersh_window() {
+    var refersh_time = getCookie('refersh_time');
+    if (refersh_time == 1) {
+        window.location.reload();
+    }
+}
+setInterval(function(){
+	refersh_window()
+}, 2000);
+</script>
+</body>
