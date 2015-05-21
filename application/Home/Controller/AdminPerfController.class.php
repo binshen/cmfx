@@ -41,7 +41,8 @@ class AdminPerfController extends AdminbaseController {
         
         $perfList = $this->Dao
             ->join("sd_project ON sd_project.id = sd_perf.pid")
-            ->field("sd_perf.*, sd_project.name AS pname")
+            ->join("sd_broker ON sd_broker.id = sd_perf.bid")
+            ->field("sd_perf.*, sd_project.name AS pname, sd_broker.name AS bname")
             ->where($map)
             ->order("sd_perf.date DESC")
             ->limit($page->firstRow . ',' . $page->listRows)
@@ -68,6 +69,19 @@ class AdminPerfController extends AdminbaseController {
         $this->display("AdminPerf:edit");
     }
     
+    function edit_post() {
+        
+        if(IS_POST) {
+            if ($this->Dao->create()) {
+                if ($this->Dao->add() !== false) {
+                    $this->success("添加成功！", U("AdminPerf/index"), true);
+                } else {
+                    $this->error("添加失败！");
+                }
+            }
+        }
+    }
+    
     function add_broker() {
         
         $brokerList = $this->BrokerDao->order('name')->select();
@@ -92,8 +106,17 @@ class AdminPerfController extends AdminbaseController {
         
         $total = I('post.total');
         $bid = I('post.id');
-        $broker = $this->BrokerDao->where('id=' . $bid)->find();
+        $broker = $this->BrokerDao
+            ->join('sd_rank ON sd_rank.id = sd_broker.rank_id')
+            ->field('sd_broker.rank_id, sd_rank.name AS rank_name')
+            ->where('sd_broker.id=' . $bid)
+            ->find();
+        
         $rank_id = $broker['rank_id'];
-        echo getBrokerageByRank($rank_id, $total);
+        $rank_name = $broker['rank_name'];
+        $result = array();
+        $result['bkg'] = getBrokerageByRank($rank_id, $total);
+        $result['rank'] = $rank_name;
+        echo json_encode($result);
     }
 }
