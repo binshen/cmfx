@@ -1424,3 +1424,16 @@ function getBrokerageByRank($rank_id, $total) {
     }
     return $result;
 }
+
+function checkDateIsValid($date, $formats = array("Ymd")) {
+    $unixTime = strtotime($date);
+    if (!$unixTime) {
+        return false;
+    }
+    foreach ($formats as $format) {
+        if (date($format, $unixTime) == $date) {
+            return true;
+        }
+    }
+    return false;
+}

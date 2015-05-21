@@ -72,6 +72,9 @@ class AdminPerfController extends AdminbaseController {
     function edit_post() {
         
         if(IS_POST) {
+            if(!$this->valid()) {
+                return;
+            }
             if ($this->Dao->create()) {
                 if ($this->Dao->add() !== false) {
                     $this->success("添加成功！", U("AdminPerf/index"), true);
@@ -79,6 +82,7 @@ class AdminPerfController extends AdminbaseController {
                     $this->error("添加失败！");
                 }
             }
+            
         }
     }
     
@@ -118,5 +122,50 @@ class AdminPerfController extends AdminbaseController {
         $result['bkg'] = getBrokerageByRank($rank_id, $total);
         $result['rank'] = $rank_name;
         echo json_encode($result);
+    }
+    
+    private function valid() {
+        extract($_POST);
+        if(empty($date)) {
+            $this->error("请输入月份");
+            return false;
+        }
+        if(!checkDateIsValid($date . '01')) {
+            $this->error("月份格式不正确");
+            return false;
+        }
+        if(empty($num)) {
+            $this->error("请输入楼盘房号");
+            return false;
+        }
+        if(empty($total)) {
+            $this->error("请输入楼盘成交价");
+            return false;
+        }
+        if(!is_numeric($total)) {
+            $this->error("楼盘成交价格式不正确");
+            return false;
+        }
+        if(empty($perf)) {
+            $this->error("请输入楼盘销售业绩");
+            return false;
+        }
+        if(!is_numeric($perf)) {
+            $this->error("楼盘销售业绩格式不正确");
+            return false;
+        }
+        if(empty($bid)) {
+            $this->error("请选择业务员");
+            return false;
+        }
+        if(empty($bkg)) {
+            $this->error("请输入业务员佣金");
+            return false;
+        }
+        if(!is_numeric($bkg)) {
+            $this->error("业务员佣金格式不正确");
+            return false;
+        }
+        return true;
     }
 }
