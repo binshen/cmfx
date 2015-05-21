@@ -4,12 +4,21 @@
 		<ul class="nav nav-tabs">
 	     	<li class="active"><a href="{:U('AdminPayb/edit')}">应发详情（业务员）</a></li>
 	  	</ul>
-		<form class="form-horizontal J_ajaxForm" action="{:u('AdminBroker/edit_post')}" method="post">
+		<form class="form-horizontal J_ajaxForm" action="{:u('AdminPayb/edit_post')}" method="post">
 		 	<input type="hidden" name="id" value="{$id}" />
 		 	<table class="table table-hover table-bordered table-list">
           	<thead>
           		<tr>
-	            	<th colspan="6"><span style="color:red;">白鹭湾-201503</span></th>
+	            	<th colspan="5"><span style="color:red;">{$name}--{$date}</span></th>
+	            	<th>
+	            	<php>
+	            	if($status == 2) {
+            			echo "<font color='green' style='float:right;'>已完结</font>";
+            		} else {
+            			echo "<font color='red' style='float:right;'>未完结</font>";
+            		}
+            		</php>
+            		</th>
 	          	</tr>
 	          	<tr>
 	            	<th>业务员</th>
@@ -20,39 +29,16 @@
 	            	<th width="100">本次实付</th>
 	          	</tr>
 	      	</thead>
+	      	<foreach name="payb" item="vo">
         	<tr>
-        		<td>AAA</td>
-        		<td>普通</td>
-        		<td>150522394829</td>
-        		<td><font color="green" size="3">30000</font></td>
-        		<td><font color="red" size="3">10000</font></td>
+        		<td>{$vo.bname}<input type="hidden" name="bid[]" value="{$vo.bid}"></td>
+        		<td>{$vo.rname}</td>
+        		<td>{$vo.tel}</td>
+        		<td><font color="green" size="3">{$vo.pay}</font></td>
+        		<td><font color="red" size="3">{$vo.payd}</font></td>
         		<td><input type="text" name="pay[]" style="height:14px;"></td>
           	</tr>
-          	<tr>
-        		<td>AAA</td>
-        		<td>普通</td>
-        		<td>150522394829</td>
-        		<td><font color="green" size="3">30000</font></td>
-        		<td><font color="red" size="3">10000</font></td>
-        		<td><input type="text" name="pay[]" style="height:14px;"></td>
-          	</tr>
-          	<tr>
-        		<td>AAA</td>
-        		<td>普通</td>
-        		<td>150522394829</td>
-        		<td><font color="green" size="3">30000</font></td>
-        		<td><font color="red" size="3">10000</font></td>
-        		<td><input type="text" name="pay[]" style="height:14px;"></td>
-          	</tr>
-          	<tr>
-        		<td>AAA</td>
-        		<td>普通</td>
-        		<td>150522394829</td>
-        		<td><font color="green" size="3">30000</font></td>
-        		<td><font color="red" size="3">10000</font></td>
-        		<td><input type="text" name="pay[]" style="height:14px;"></td>
-          	</tr>
-          	
+          	</foreach>
 		</table>
 			<div class="form-actions">
 				<button class="btn btn-primary" type="submit" onclick="return check_input();">提交</button>
