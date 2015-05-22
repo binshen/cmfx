@@ -5,11 +5,10 @@
 	     	<li class="active"><a href="{:U('AdminPayb/edit')}">应发详情（业务员）</a></li>
 	  	</ul>
 		<form class="form-horizontal J_ajaxForm" action="{:u('AdminPayb/edit_post')}" method="post">
-		 	<input type="hidden" name="id" value="{$id}" />
 		 	<table class="table table-hover table-bordered table-list">
           	<thead>
           		<tr>
-	            	<th colspan="5"><span style="color:red;">{$name}--{$date}</span></th>
+	            	<th colspan="3"><span style="color:red;">{$name}--{$date}</span></th>
 	            	<th>
 	            	<php>
 	            	if($status == 2) {
@@ -22,20 +21,16 @@
 	          	</tr>
 	          	<tr>
 	            	<th>业务员</th>
-	            	<th width="100">级别</th>
-	            	<th width="100">手机</th>
-	            	<th width="100">应付</th>
+	            	<th width="100">佣金</th>
 	            	<th width="100">已付</th>
 	            	<th width="100">本次实付</th>
 	          	</tr>
 	      	</thead>
 	      	<foreach name="payb" item="vo">
         	<tr>
-        		<td>{$vo.bname}<input type="hidden" name="bid[]" value="{$vo.bid}"></td>
-        		<td>{$vo.rname}</td>
-        		<td>{$vo.tel}</td>
-        		<td><font color="green" size="3">{$vo.pay}</font></td>
-        		<td><font color="red" size="3">{$vo.payd}</font></td>
+        		<td>{$vo.bname}({$vo.rname})<input type="hidden" name="id[]" value="{$vo.id}"></td>
+        		<td><font color="green" size="3"><a href="javascript:;" onclick="c_bkg(this);">{$vo.bkg}</a></font></td>
+        		<td><font color="red" size="3"><php>echo $vo['payd']?$vo['payd']:'0.00'</php></font></td>
         		<td><input type="text" name="pay[]" style="height:14px;"></td>
           	</tr>
           	</foreach>
@@ -81,6 +76,11 @@
 				return false;
 			}
 			
+		}
+		
+		function c_bkg(obj){
+			bkg = $(obj).html();
+			$(obj).parent().parent().next().next().find('input').val(bkg);
 		}
 	</script>
 </body>
