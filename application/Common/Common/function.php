@@ -1411,6 +1411,7 @@ function getBrokerageByRank($rank_id, $total) {
             break;
         case 2:
         case 3:
+        case 6:
             $result = $total * 0.50;
             break;
         case 4:

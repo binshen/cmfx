@@ -69,20 +69,67 @@ class AdminPerfController extends AdminbaseController {
         $this->display("AdminPerf:edit");
     }
     
+    function edit() {
+        $id = I('get.id', 0, 'intval');
+        $perf = $this->Dao
+            ->join('sd_broker ON sd_broker.id = sd_perf.bid')
+            ->join('sd_rank ON sd_rank.id = sd_broker.rank_id')
+            ->field('sd_perf.*, sd_rank.name AS rank_name')
+            ->where('sd_perf.id=' . $id)
+            ->find();
+        $this->assign($perf);
+        
+        $this->add();
+    }
+    
     function edit_post() {
         
         if(IS_POST) {
             if(!$this->valid()) {
                 return;
             }
-            if ($this->Dao->create()) {
-                if ($this->Dao->add() !== false) {
-                    $this->success("添加成功！", U("AdminPerf/index"), true);
+            if(empty($_POST['id'])) {
+                if ($this->Dao->create()) {
+                    if ($this->Dao->add() !== false) {
+                        $this->success("添加成功！", U("AdminPerf/index"), true);
+                    } else {
+                        $this->error("添加失败！");
+                    }
                 } else {
-                    $this->error("添加失败！");
+                    $this->error($this->Dao->getError());
+                }
+            } else {
+                if ($this->Dao->create()) {
+                    if ($this->Dao->save()!==false) {
+                        $this->success("修改成功！", U("AdminPerf/index"), true);
+                    } else {
+                        $this->error("修改失败！");
+                    }
+                } else {
+                    $this->error($this->Dao->getError());
                 }
             }
-            
+        }
+    }
+    
+    function delete() {
+    
+        if(isset($_POST['ids'])){
+            $ids = implode(",", $_POST['ids']);
+            if ($this->Dao->where("id in ($ids)")->delete()) {
+                $this->success("删除成功！", U("AdminPerf/index"), true);
+            } else {
+                $this->error("删除失败！");
+            }
+        }else{
+            if(isset($_GET['id'])){
+                $id = intval(I("get.id"));
+                if ($this->Dao->delete($id)) {
+                    $this->success("删除成功！", U("AdminPerf/index"), true);
+                } else {
+                    $this->error("删除失败！");
+                }
+            }
         }
     }
     

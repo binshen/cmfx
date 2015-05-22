@@ -36,6 +36,7 @@
 	            	<th>月份</th>
 	            	<th>业务员</th>
 	            	<th>佣金(元)</th>
+	            	<th>操作</th>
 	          	</tr>
 	      	</thead>
           	<foreach name="perfList" item="vo">
@@ -49,13 +50,22 @@
 		            <td>{$vo.date}</td>
 		            <td>{$vo.bname}</td>
 		            <td>{$vo.bkg}</td>
+		            <td>
+		            	<if condition="$vo.status eq 0">
+		            	<a href="{:U('AdminPerf/edit', array('id' => $vo['id']))}" class="J_dialog" title="业绩录入">编辑</a>
+		            	|
+		            	<a href="{:U('AdminPerf/delete', array('id' => $vo['id']))}" class="J_ajax_del" >删除</a>
+		            	</if>
+		            </td>
 	          	</tr>
           	</foreach>
 		</table>
+		<!--  
 		<div class="table-actions">
 			<button class="btn btn-primary btn-small J_ajax_submit_btn" type="submit" data-action="{:U('AdminPerf/delete')}" data-subcheck="true" data-msg="你确定删除吗？">删除</button>
 			<div class="pagination" style="float:right;">{$page}</div>
 		</div>
+		-->
   	</form>
 </div>
 <script src="__ROOT__/statics/js/common.js"></script>
