@@ -5,17 +5,17 @@ use Common\Controller\AdminbaseController;
 class AdminPerfController extends AdminbaseController {
     
     protected $Dao;
-    protected $PerfBrokerDao;
     protected $ProjectDao;
     protected $BrokerDao;
+    protected $TypeDao;
     
     function _initialize() {
     
         parent::_initialize();
         $this->Dao = D("Home/Perf");
-        $this->PerfBrokerDao = D("Home/PerfBroker");
         $this->ProjectDao = D("Home/Project");
         $this->BrokerDao = D("Home/Broker");
+        $this->TypeDao = D("Home/Type");
     }
     
     function index(){
@@ -40,9 +40,10 @@ class AdminPerfController extends AdminbaseController {
         $page = $this->page($count, 20);
         
         $perfList = $this->Dao
+            ->join("sd_type ON sd_type.id = sd_perf.tid")
             ->join("sd_project ON sd_project.id = sd_perf.pid")
             ->join("sd_broker ON sd_broker.id = sd_perf.bid")
-            ->field("sd_perf.*, sd_project.name AS pname, sd_broker.name AS bname")
+            ->field("sd_perf.*, sd_type.name AS tname, sd_project.name AS pname, sd_broker.name AS bname, sd_type.discount")
             ->where($map)
             ->order("sd_perf.date DESC")
             ->limit($page->firstRow . ',' . $page->listRows)
@@ -59,6 +60,9 @@ class AdminPerfController extends AdminbaseController {
     }
     
     function add() {
+        
+        $typeList = $this->TypeDao->select();
+        $this->assign('typeList', $typeList);
         
         $projectList = $this->ProjectDao->order('name')->select();
         $this->assign('projectList', $projectList);

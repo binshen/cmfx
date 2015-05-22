@@ -28,12 +28,16 @@
           	<thead>
 	          	<tr>
 	            	<th width="16"><label><input type="checkbox" class="J_check_all" data-direction="x" data-checklist="J_check_x"></label></th>
-	            	<th width="100">ID</th>
+	            	<th width="50">ID</th>
+	            	<th>类型</th>
 	            	<th>楼盘</th>
-	            	<th>房号</th>
-	            	<th>成交价(元)</th>
-	            	<th>业绩(元)</th>
 	            	<th>月份</th>
+	            	<th>房号</th>
+	            	<th>成交价</th>
+	            	<th>中介费</th>
+	            	<th>评估费</th>
+	            	<th>贷款服务费</th>
+	            	<th>其他</th>
 	            	<th>业务员</th>
 	            	<th>佣金(元)</th>
 	            	<th>操作</th>
@@ -43,11 +47,15 @@
 	        	<tr>
 		            <td><input type="checkbox" class="J_check" data-yid="J_check_y" data-xid="J_check_x" name="ids[]" value="{$vo.id}"></td>
 		            <td>{$vo.id}</td>
+		            <td>{$vo.tname}</td>
 		            <td>{$vo.pname}</td>
+		            <td>{$vo.date}</td>
 		            <td>{$vo.num}</td>
 		            <td>{$vo.total}</td>
-		            <td>{$vo.perf}</td>
-		            <td>{$vo.date}</td>
+		            <td>{$vo.agency}</td>
+		            <td>{$vo.estimate}</td>
+		            <td>{$vo.service}</td>
+		            <td>{$vo.others}</td>
 		            <td>{$vo.bname}</td>
 		            <td>{$vo.bkg}</td>
 		            <td>
