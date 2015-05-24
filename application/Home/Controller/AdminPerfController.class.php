@@ -177,12 +177,16 @@ class AdminPerfController extends AdminbaseController {
     
     private function valid() {
         extract($_POST);
-        if(empty($date)) {
-            $this->error("请输入月份");
+        if(empty($pid)) {
+            $this->error("请选择楼盘");
             return false;
         }
-        if(!checkDateIsValid($date . '01')) {
-            $this->error("月份格式不正确");
+        if(empty($date)) {
+            $this->error("请输入日期");
+            return false;
+        }
+        if(!checkDateIsValid($date)) {
+            $this->error("日期格式不正确");
             return false;
         }
         if(empty($num)) {
