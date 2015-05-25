@@ -1403,10 +1403,10 @@ function getBrokerageByRank($rank_id, $total) {
                 $result = $total * 0.25 - 750;
             } else if ($total <= 35000) {
                 //$result = 15000 * 0.20 + (25000 - 15000) * 0.25 + ($total - 25000) * 0.30;
-                $result = total * 0.30 - 2000;
+                $result = $total * 0.30 - 2000;
             } else {
                 //$result = 15000 * 0.20 + (25000 - 15000) * 0.25 + (35000 - 25000) * 0.30 + ($total - 35000) * 0.45;
-                $result = total * 0.45 - 7250;
+                $result = $total * 0.45 - 7250;
             }
             break;
         case 2:
