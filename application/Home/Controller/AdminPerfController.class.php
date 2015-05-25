@@ -31,7 +31,7 @@ class AdminPerfController extends AdminbaseController {
             
             $date = I('post.date');
             if(!empty($date)) {
-                $map['date'] = $date;
+                $map["DATE_FORMAT(sd_perf.date,'%Y%m')"] = $date;
             }
             
             $this->assign('project', $project);
@@ -45,7 +45,7 @@ class AdminPerfController extends AdminbaseController {
             ->join("sd_type ON sd_type.id = sd_perf.tid")
             ->join("sd_project ON sd_project.id = sd_perf.pid")
             ->join("sd_broker ON sd_broker.id = sd_perf.bid")
-            ->field("sd_perf.*, sd_type.name AS tname, sd_project.name AS pname, sd_broker.name AS bname, sd_type.discount")
+            ->field("sd_perf.*, sd_type.name AS tname, sd_project.name AS pname, sd_broker.name AS bname, sd_type.discount, DATE_FORMAT(sd_perf.date,'%Y-%m') AS month")
             ->where($map)
             ->order("sd_perf.date DESC")
             ->limit($page->firstRow . ',' . $page->listRows)
