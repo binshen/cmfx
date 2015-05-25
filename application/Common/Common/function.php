@@ -1426,7 +1426,7 @@ function getBrokerageByRank($rank_id, $total) {
     return $result;
 }
 
-function checkDateIsValid($date, $formats = array("Ymd")) {
+function checkDateIsValid($date, $formats = array("Y-m-d")) {
     $unixTime = strtotime($date);
     if (!$unixTime) {
         return false;

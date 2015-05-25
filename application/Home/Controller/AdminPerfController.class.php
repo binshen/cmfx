@@ -199,10 +199,6 @@ class AdminPerfController extends AdminbaseController {
             $this->error("日期格式不正确");
             return false;
         }
-        if(empty($num)) {
-            $this->error("请输入楼盘房号");
-            return false;
-        }
         if(empty($total)) {
             $this->error("请输入楼盘成交价");
             return false;
@@ -211,12 +207,28 @@ class AdminPerfController extends AdminbaseController {
             $this->error("楼盘成交价格式不正确");
             return false;
         }
-        if(empty($perf)) {
-            $this->error("请输入楼盘销售业绩");
+        if(empty($num)) {
+            $this->error("请输入楼盘房号");
             return false;
         }
-        if(!is_numeric($perf)) {
-            $this->error("楼盘销售业绩格式不正确");
+        if(empty($agency)) {
+            $this->error("请输入中介费");
+            return false;
+        }
+        if(!is_numeric($agency)) {
+            $this->error("中介费格式不正确");
+            return false;
+        }
+        if(!is_numeric($estimate)) {
+            $this->error("评估费格式不正确");
+            return false;
+        }
+        if(!is_numeric($service)) {
+            $this->error("贷款服务费格式不正确");
+            return false;
+        }
+        if(!is_numeric($others)) {
+            $this->error("其他费用格式不正确");
             return false;
         }
         if(empty($bid)) {
