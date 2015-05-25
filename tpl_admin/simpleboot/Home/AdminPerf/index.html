@@ -59,11 +59,11 @@
 		            <td>{$vo.bname}</td>
 		            <td>{$vo.bkg}</td>
 		            <td>
-		            	<if condition="$vo.status eq 0">
-		            	<a href="{:U('AdminPerf/edit', array('id' => $vo['id']))}" class="J_dialog" title="业绩录入">编辑</a>
-		            	|
-		            	<a href="{:U('AdminPerf/delete', array('id' => $vo['id']))}" class="J_ajax_del" >删除</a>
+		            	<if condition="$vo.payd eq 0">
+		            		<a href="{:U('AdminPerf/edit', array('id' => $vo['id']))}" class="J_dialog" title="业绩录入">编辑</a>
+		            		|
 		            	</if>
+		            	<a href="{:U('AdminPerf/delete', array('id' => $vo['id']))}" class="J_ajax_del" >删除</a>
 		            </td>
 	          	</tr>
           	</foreach>

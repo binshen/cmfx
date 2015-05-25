@@ -1,0 +1,1 @@
+<?phpnamespace Home\Model;use Common\Model\CommonModel;class BonusModel extends CommonModel{        protected $tablePrefix = 'sd_';    }

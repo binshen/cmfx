@@ -8,6 +8,7 @@ class AdminPerfController extends AdminbaseController {
     protected $ProjectDao;
     protected $BrokerDao;
     protected $TypeDao;
+    protected $BonusDao;
     
     function _initialize() {
     
@@ -16,6 +17,7 @@ class AdminPerfController extends AdminbaseController {
         $this->ProjectDao = D("Home/Project");
         $this->BrokerDao = D("Home/Broker");
         $this->TypeDao = D("Home/Type");
+        $this->BonusDao = D("Home/Bonus");
     }
     
     function index(){
@@ -95,7 +97,10 @@ class AdminPerfController extends AdminbaseController {
             }
             if(empty($_POST['id'])) {
                 if ($this->Dao->create()) {
-                    if ($this->Dao->add() !== false) {
+                    $id = $this->Dao->add();
+                    if ($id !== false) {
+                        $this->calculateManagerPerformance($id);
+                        
                         $this->success("添加成功！", U("AdminPerf/index"), true);
                     } else {
                         $this->error("添加失败！");
@@ -106,6 +111,8 @@ class AdminPerfController extends AdminbaseController {
             } else {
                 if ($this->Dao->create()) {
                     if ($this->Dao->save()!==false) {
+                        $this->calculateManagerPerformance($_POST['id']);
+                        
                         $this->success("修改成功！", U("AdminPerf/index"), true);
                     } else {
                         $this->error("修改失败！");
@@ -114,6 +121,47 @@ class AdminPerfController extends AdminbaseController {
                     $this->error($this->Dao->getError());
                 }
             }
+        }
+    }
+    
+    function test() {
+        $bid = 3;
+        $broker1 = $this->BrokerDao->field('parent_id')->where('id=' . $bid)->find();
+        $parent_id1 = $broker1['parent_id'];
+        dump($parent_id1);
+    }
+    
+    private function calculateManagerPerformance($id) {
+        
+        $bid = $_POST['bid'];
+        $bkg = $_POST['bkg'];
+        $broker = $this->BrokerDao->field('parent_id')->where('id=' . $bid)->find();
+        $parent_id = $broker['parent_id'];
+        
+        $data = array();
+        $data['sid'] = $parent_id;
+        $data['pid'] = $id;
+        $bonus = $this->BonusDao->where($data)->find();
+        if(empty($bonus)) {
+            $data['bonus'] = floatval($bkg) * 0.3;
+            $this->BonusDao->add($data);
+        } else {
+            $bonus['bonus'] = floatval($bkg) * 0.3;
+            $this->BonusDao->save($bonus);
+        }
+        
+        $broker = $this->BrokerDao->field('parent_id')->where('id=' . $parent_id)->find();
+        $parent_id = $broker['parent_id'];
+        if($parent_id <= 0) return;
+        
+        $data['sid'] = $parent_id;
+        $bonus = $this->BonusDao->where($data)->find();
+        if(empty($bonus)) {
+            $data['bonus'] = floatval($bkg) * 0.3 * 0.15;
+            $this->BonusDao->add($data);
+        } else {
+            $bonus['bonus'] = floatval($bkg) * 0.3 * 0.15;
+            $this->BonusDao->save($bonus);
         }
     }
     
