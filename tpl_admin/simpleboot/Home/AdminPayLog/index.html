@@ -8,11 +8,11 @@
 	<form class="well form-search" method="post" id="cid_form" action="{:U('AdminPayLog/index')}">
 		<div class="search_type cc mb10">
 			<div class="mb10">
-				选择楼盘：
-				<select class="select_2" name="project" id="project">
-					<option value="">- 请选择楼盘 -</option>
-					<volist name="projectList" id="vo">
-						<php>$selected=$vo['id']===$project?"selected":"";</php>
+				选择业务员：
+				<select class="select_2" name="broker" id="broker">
+					<option value="">- 请选择业务员 -</option>
+					<volist name="brokerList" id="vo">
+						<php>$selected=$vo['id']===$broker?"selected":"";</php>
 						<option value="{$vo.id}" {$selected}>{$vo.name}</option>
 					</volist>
 				</select>&nbsp;&nbsp;
@@ -29,7 +29,6 @@
           	<thead>
 	          	<tr>
 	            	<th>业务员</th>
-	            	<th>楼盘</th>
 	            	<th>月份</th>
 	            	<th>金额</th>
 	            	<th>付款时间</th>
@@ -38,10 +37,9 @@
           	<foreach name="payLogList" item="vo">
 	        	<tr>
 		            <td>{$vo.bname}</td>
-		            <td>{$vo.pname}</td>
 		            <td>{$vo.date}</td>
 		            <td>{$vo.pay}</td>
-		            <td>{$vo.cdate}</td>
+		            <td>{$vo.created}</td>
 		            
 	          	</tr>
           	</foreach>
@@ -64,7 +62,7 @@ setInterval(function(){
 
 $(function() {
 	$("#btnClear").click(function() {
-		$("#project").val("");
+		$("#broker").val("");
 		$("#date").val("");
 	});
 });
