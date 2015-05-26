@@ -124,7 +124,7 @@ class AdminPerfController extends AdminbaseController {
         }
     }
     
-    private function calculateManagerPerformance($id) {
+    private function calculateManagerPerformance($perf_id) {
         
         extract($_POST);
         $broker = $this->BrokerDao->field('parent_id')->where('id=' . $bid)->find();
@@ -135,13 +135,15 @@ class AdminPerfController extends AdminbaseController {
         
         $data = array();
         $data['sid'] = $parent_id;
-        $data['pid'] = id;
+        $data['pid'] = $perf_id;
         $payMng = $this->PayMngDao->where($data)->find();        
         if(empty($payMng)) {
             $data['bonus'] = floatval($perf) * 0.3;
+            $data['type'] = 1;
             $this->PayMngDao->add($data);
         } else {
             $payMng['bonus'] = floatval($perf) * 0.3;
+            $data['type'] = 1;
             $this->PayMngDao->save($payMng);
         }
         
@@ -153,15 +155,29 @@ class AdminPerfController extends AdminbaseController {
         $payMng = $this->PayMngDao->where($data)->find();
         if(empty($payMng)) {
             $data['bonus'] = floatval($perf) * 0.3 * 0.15;
+            $data['type'] = 2;
             $this->PayMngDao->add($data);
         } else {
             $payMng['bonus'] = floatval($perf) * 0.3 * 0.15;
+            $data['type'] = 2;
             $this->PayMngDao->save($payMng);
         }
     }
     
     function delete() {
-    
+        if(isset($_GET['id'])){
+            $id = intval(I("get.id"));
+            if($this->PayMngDao->where('pid=' . $id)->delete()) {
+                if ($this->Dao->delete($id)) {
+                    $this->success("删除成功！", U("AdminPerf/index"), true);
+                } else {
+                    $this->error("删除失败！");
+                }
+            }else {
+                $this->error("删除失败！");
+            }
+        }
+    /*
         if(isset($_POST['ids'])){
             $ids = implode(",", $_POST['ids']);
             if ($this->Dao->where("id in ($ids)")->delete()) {
@@ -179,6 +195,7 @@ class AdminPerfController extends AdminbaseController {
                 }
             }
         }
+    */
     }
     
     function add_broker() {
@@ -209,10 +226,17 @@ class AdminPerfController extends AdminbaseController {
 
         $year = date('Y', strtotime($date));
         $month = date('n', strtotime($date));
-        $lastTotal = $this->Dao
+
+        $perfObj = $this->Dao
+            ->field('SUM(agency+estimate+service+others) AS total_perf, SUM(bkg) AS total_bkg')
             ->where("bid=" . $bid . " AND YEAR(date)='" . $year . "' AND MONTH(date)='" . $month . "'")
             ->sum('agency+estimate+service+others');
-        if($lastTotal == null) $lastTotal = 0;
+        
+        $perfTotal = $perfObj['total_perf'];
+        $bkgTotal = $perfObj['total_bkg'];
+        
+        if($perfTotal == null) $perfTotal = 0;
+        if($bkgTotal == null) $bkgTotal = 0;
         
         $broker = $this->BrokerDao
             ->join('sd_rank ON sd_rank.id = sd_broker.rank_id')
@@ -223,7 +247,7 @@ class AdminPerfController extends AdminbaseController {
         $rank_id = $broker['rank_id'];
         $rank_name = $broker['rank_name'];
         $result = array();
-        $result['bkg'] = getBrokerageByRank($rank_id, $total+$lastTotal);
+        $result['bkg'] = getBrokerageByRank($rank_id, $total+$perfTotal) - $bkgTotal;
         $result['rank'] = $rank_name;
         echo json_encode($result);
     }

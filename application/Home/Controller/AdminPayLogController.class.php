@@ -5,57 +5,51 @@ use Common\Controller\AdminbaseController;
 class AdminPayLogController extends AdminbaseController {
     
     protected $Dao;
+    protected $BrokerDao;
     
     function _initialize() {
         
         parent::_initialize();
         $this->Dao = D("Home/PayLog");
-        $this->ProjectDao = D("Home/Project");
+        $this->BrokerDao = D("Home/Broker");
     }
     
     function index(){
     	$map = array();
     	if(IS_POST) {
-    		$project = I('post.project');
+    		$project = I('post.broker');
     		if(!empty($project)) {
-    			$map['sd_paya.pid'] = $project;
+    			$map['sd_pay_log.pid'] = $project;
     		}
     	
     		$date = I('post.date');
     		if(!empty($date)) {
-    			$map['sd_paya.date'] = $date;
+    			$map['sd_pay_log.date'] = $date;
     		}
     	
-    		$this->assign('project', $project);
+    		$this->assign('broker', $project);
     		$this->assign('date', $date);
     	}
     	
     	$count = $this->Dao
-	    	->join('sd_paya ON sd_pay_log.pay_id = sd_paya.id',"left")
-	    	->join('sd_broker ON sd_pay_log.bid = sd_broker.id',"left")
-	    	->join('sd_project ON sd_paya.pid = sd_project.id',"left")
-	    	->field('count(1) num')
+	    	->join('sd_broker ON sd_pay_log.bid = sd_broker.id', "left")
 	    	->where($map)
-	    	->find();
+	    	->count();
     	
-    	$page = $this->page($count['num'], 20);
+    	$page = $this->page($count, 20);
         $payLogList = $this->Dao
-            ->join('sd_paya ON sd_pay_log.pay_id = sd_paya.id',"left")
             ->join('sd_broker ON sd_pay_log.bid = sd_broker.id',"left")
-            ->join('sd_project ON sd_paya.pid = sd_project.id',"left")
-            ->order("sd_pay_log.cdate DESC")
-            ->field('sd_pay_log.*, sd_paya.date,sd_broker.name bname,sd_project.name pname')
+            ->order("sd_pay_log.created DESC")
+            ->field('sd_broker.name AS bname, sd_pay_log.date, sd_pay_log.pay,sd_pay_log.created')
             ->where($map)
             ->limit($page->firstRow . ',' . $page->listRows)
             ->select();
         
-        $projectList = $this->ProjectDao->order('name')->select();
-        $this->assign('projectList', $projectList);
+        $brokerList = $this->BrokerDao->order('name')->select();
+        $this->assign('brokerList', $brokerList);
         
         $this->assign('payLogList', $payLogList);
         $this->assign("page", $page->show('Admin'));
         $this->display();
     }
-    
-
 }
