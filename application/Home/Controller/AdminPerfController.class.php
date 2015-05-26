@@ -95,6 +95,9 @@ class AdminPerfController extends AdminbaseController {
             if(!$this->valid()) {
                 return;
             }
+            $perf = floatval($_POST['agency']) + floatval($_POST['estimate']) + floatval($_POST['service']) + floatval($_POST['others']);
+            $discount = $this->TypeDao->getFieldById($_POST['tid'], 'discount');
+            $_POST['perf'] = empty($discount) ? $perf : $perf * $discount;
             if(empty($_POST['id'])) {
                 if ($this->Dao->create()) {
                     $id = $this->Dao->add();
@@ -111,7 +114,7 @@ class AdminPerfController extends AdminbaseController {
             } else {
                 if ($this->Dao->create()) {
                     if ($this->Dao->save()!==false) {
-                        $this->calculateManagerPerformance($_POST['id']);
+                        $this->calculateManagerPerf($_POST['id'], $_POST['perf']);
                         
                         $this->success("修改成功！", U("AdminPerf/index"), true);
                     } else {
@@ -124,18 +127,19 @@ class AdminPerfController extends AdminbaseController {
         }
     }
     
-    private function calculateManagerPerformance($perf_id) {
+    private function calculateManagerPerf($pid, $perf) {
         
         extract($_POST);
         $broker = $this->BrokerDao->field('parent_id')->where('id=' . $bid)->find();
         $parent_id = $broker['parent_id'];
         if($parent_id <= 0) return;
         
-        $perf = floatval($agency) + floatval($estimate) + floatval($service) + floatval($others) - floatval($bkg);
+        //$perf = floatval($agency) + floatval($estimate) + floatval($service) + floatval($others) - floatval($bkg);
+        $perf = floatval($perf) - floatval($bkg);
         
         $data = array();
         $data['sid'] = $parent_id;
-        $data['pid'] = $perf_id;
+        $data['pid'] = $pid;
         $payMng = $this->PayMngDao->where($data)->find();        
         if(empty($payMng)) {
             $data['bonus'] = floatval($perf) * 0.3;
@@ -177,25 +181,6 @@ class AdminPerfController extends AdminbaseController {
                 $this->error("删除失败！");
             }
         }
-    /*
-        if(isset($_POST['ids'])){
-            $ids = implode(",", $_POST['ids']);
-            if ($this->Dao->where("id in ($ids)")->delete()) {
-                $this->success("删除成功！", U("AdminPerf/index"), true);
-            } else {
-                $this->error("删除失败！");
-            }
-        }else{
-            if(isset($_GET['id'])){
-                $id = intval(I("get.id"));
-                if ($this->Dao->delete($id)) {
-                    $this->success("删除成功！", U("AdminPerf/index"), true);
-                } else {
-                    $this->error("删除失败！");
-                }
-            }
-        }
-    */
     }
     
     function add_broker() {
@@ -228,9 +213,9 @@ class AdminPerfController extends AdminbaseController {
         $month = date('n', strtotime($date));
 
         $perfObj = $this->Dao
-            ->field('SUM(agency+estimate+service+others) AS total_perf, SUM(bkg) AS total_bkg')
+            ->field('SUM(perf) AS total_perf, SUM(bkg) AS total_bkg')
             ->where("bid=" . $bid . " AND YEAR(date)='" . $year . "' AND MONTH(date)='" . $month . "'")
-            ->sum('agency+estimate+service+others');
+            ->find();
         
         $perfTotal = $perfObj['total_perf'];
         $bkgTotal = $perfObj['total_bkg'];
