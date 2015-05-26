@@ -9,6 +9,7 @@ class AdminPerfController extends AdminbaseController {
     protected $BrokerDao;
     protected $TypeDao;
     protected $BonusDao;
+    protected $PayMngDao;
     
     function _initialize() {
     
@@ -18,6 +19,7 @@ class AdminPerfController extends AdminbaseController {
         $this->BrokerDao = D("Home/Broker");
         $this->TypeDao = D("Home/Type");
         $this->BonusDao = D("Home/Bonus");
+        $this->PayMngDao = D("Home/PayMng");
     }
     
     function index(){
@@ -124,29 +126,31 @@ class AdminPerfController extends AdminbaseController {
         }
     }
     
-    function test() {
-        $bid = 3;
-        $broker1 = $this->BrokerDao->field('parent_id')->where('id=' . $bid)->find();
-        $parent_id1 = $broker1['parent_id'];
-        dump($parent_id1);
-    }
-    
     private function calculateManagerPerformance($id) {
         
-        $bid = $_POST['bid'];
-        $bkg = $_POST['bkg'];
         $broker = $this->BrokerDao->field('parent_id')->where('id=' . $bid)->find();
         $parent_id = $broker['parent_id'];
+        if($parent_id <= 0) return;
+        
+        $perf = floatval($agency) + floatval($estimate) + floatval($service) + floatval($others) - floatval($bkg);
+        
+        $payMap = array();
+        $payMap['sid'] = $parent_id;
+        $payMap['pid'] = $id;
+        $payMng = $this->PayMngDao->where($payMap)->find();
+        if(empty($payMng)) {
+            $this->PayMngDao->add($payMap);
+        }
         
         $data = array();
         $data['sid'] = $parent_id;
-        $data['pid'] = $id;
-        $bonus = $this->BonusDao->where($data)->find();
+        $data['date'] = date('Ym', strtotime($date));
+        $bonus = $this->BonusDao->where($data)->find();        
         if(empty($bonus)) {
-            $data['bonus'] = floatval($bkg) * 0.3;
+            $data['bonus'] = floatval($perf) * 0.3;
             $this->BonusDao->add($data);
         } else {
-            $bonus['bonus'] = floatval($bkg) * 0.3;
+            $bonus['bonus'] = floatval($perf) * 0.3;
             $this->BonusDao->save($bonus);
         }
         
@@ -154,13 +158,19 @@ class AdminPerfController extends AdminbaseController {
         $parent_id = $broker['parent_id'];
         if($parent_id <= 0) return;
         
+        $payMap['sid'] = $parent_id;
+        $payMng = $this->PayMngDao->where($payMap)->find();
+        if(empty($payMng)) {
+            $this->PayMngDao->add($payMap);
+        }
+        
         $data['sid'] = $parent_id;
         $bonus = $this->BonusDao->where($data)->find();
         if(empty($bonus)) {
-            $data['bonus'] = floatval($bkg) * 0.3 * 0.15;
+            $data['bonus'] = floatval($perf) * 0.3 * 0.15;
             $this->BonusDao->add($data);
         } else {
-            $bonus['bonus'] = floatval($bkg) * 0.3 * 0.15;
+            $bonus['bonus'] = floatval($perf) * 0.3 * 0.15;
             $this->BonusDao->save($bonus);
         }
     }
