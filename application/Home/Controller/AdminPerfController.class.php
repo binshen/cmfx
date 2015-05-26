@@ -208,7 +208,14 @@ class AdminPerfController extends AdminbaseController {
         $total = I('post.total', 0, 'floatval');
         $bid = I('post.id');
         $date = I('post.date');
-
+        
+        $tid = I('post.tid', 0, 'intval');
+        $discount = $this->TypeDao->getFieldById($tid, 'discount');
+        
+        if(!empty($discount)) {
+            $total = $total * $discount;
+        }
+        
         $year = date('Y', strtotime($date));
         $month = date('n', strtotime($date));
 
