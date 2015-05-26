@@ -8,7 +8,6 @@ class AdminPerfController extends AdminbaseController {
     protected $ProjectDao;
     protected $BrokerDao;
     protected $TypeDao;
-    protected $BonusDao;
     protected $PayMngDao;
     
     function _initialize() {
@@ -18,7 +17,6 @@ class AdminPerfController extends AdminbaseController {
         $this->ProjectDao = D("Home/Project");
         $this->BrokerDao = D("Home/Broker");
         $this->TypeDao = D("Home/Type");
-        $this->BonusDao = D("Home/Bonus");
         $this->PayMngDao = D("Home/PayMng");
     }
     
@@ -128,50 +126,37 @@ class AdminPerfController extends AdminbaseController {
     
     private function calculateManagerPerformance($id) {
         
+        extract($_POST);
         $broker = $this->BrokerDao->field('parent_id')->where('id=' . $bid)->find();
         $parent_id = $broker['parent_id'];
         if($parent_id <= 0) return;
         
         $perf = floatval($agency) + floatval($estimate) + floatval($service) + floatval($others) - floatval($bkg);
         
-        $payMap = array();
-        $payMap['sid'] = $parent_id;
-        $payMap['pid'] = $id;
-        $payMng = $this->PayMngDao->where($payMap)->find();
-        if(empty($payMng)) {
-            $this->PayMngDao->add($payMap);
-        }
-        
         $data = array();
         $data['sid'] = $parent_id;
-        $data['date'] = date('Ym', strtotime($date));
-        $bonus = $this->BonusDao->where($data)->find();        
-        if(empty($bonus)) {
+        $data['pid'] = id;
+        $payMng = $this->PayMngDao->where($data)->find();        
+        if(empty($payMng)) {
             $data['bonus'] = floatval($perf) * 0.3;
-            $this->BonusDao->add($data);
+            $this->PayMngDao->add($data);
         } else {
-            $bonus['bonus'] = floatval($perf) * 0.3;
-            $this->BonusDao->save($bonus);
+            $payMng['bonus'] = floatval($perf) * 0.3;
+            $this->PayMngDao->save($payMng);
         }
         
         $broker = $this->BrokerDao->field('parent_id')->where('id=' . $parent_id)->find();
         $parent_id = $broker['parent_id'];
         if($parent_id <= 0) return;
-        
-        $payMap['sid'] = $parent_id;
-        $payMng = $this->PayMngDao->where($payMap)->find();
-        if(empty($payMng)) {
-            $this->PayMngDao->add($payMap);
-        }
-        
+                
         $data['sid'] = $parent_id;
-        $bonus = $this->BonusDao->where($data)->find();
-        if(empty($bonus)) {
+        $payMng = $this->PayMngDao->where($data)->find();
+        if(empty($payMng)) {
             $data['bonus'] = floatval($perf) * 0.3 * 0.15;
-            $this->BonusDao->add($data);
+            $this->PayMngDao->add($data);
         } else {
-            $bonus['bonus'] = floatval($perf) * 0.3 * 0.15;
-            $this->BonusDao->save($bonus);
+            $payMng['bonus'] = floatval($perf) * 0.3 * 0.15;
+            $this->PayMngDao->save($payMng);
         }
     }
     
