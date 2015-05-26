@@ -59,36 +59,42 @@ class AdminPaybController extends AdminbaseController {
 	    	->find();
     	$paya['date'] = $date;
     	
-    	
     	$payb = $this->Daoperf
         	->join("sd_broker ON sd_perf.bid = sd_broker.id","left")
         	->join("sd_rank ON sd_broker.rank_id = sd_rank.id","left")
-    		->where('pid='.$pid)
-    		->where("DATE_FORMAT(sd_perf.date,'%Y-%m')='".$date."'")
+    		->where("pid=".$pid." and DATE_FORMAT(sd_perf.date,'%Y-%m')='".$date."'")	
     		->field("sd_perf.*,sd_broker.name bname,tel,sd_rank.name rname")
     		->select();
-    	
     	
     	$this->assign('payb', $payb);
     	$this->assign($paya);
     	$this->display();
     }
     
-    
     function edit_post() {
     	$id = $_POST['id'];
 		$pay = $_POST['pay'];
+		$pay_all_arr = $_POST['pay_all'];
+		$bid_arr = $_POST['bid'];
+		
 		foreach($id as $k=>$v){
 			if($pay[$k]){
-
-				$log = array(
+				$bid = $bid_arr[$k];
+				die($bid);
+				
+				
+				
+/*				$log = array(
 						'pay_id'=>$id,
 						'pay'=>$pay[$k],
 						'cdate'=>date('Y-m-d H:i:s',time())
-				);
+				);*/
 				
-				$this->Daoperf->where('id='.$id[$k])->setInc('payd',$pay[$k]);
-				$this->Daol->add($log);
+				
+				
+				
+/*				$this->Daoperf->where('id='.$id[$k])->setInc('payd',$pay[$k]);
+				$this->Daol->add($log);*/
 				
 			}
 		}

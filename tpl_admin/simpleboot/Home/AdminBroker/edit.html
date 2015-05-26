@@ -40,6 +40,7 @@
 									<td>上级:</td>
 									<td>
 										<select id="parent_id" name="parent_id" >
+											<option value="0">-请选择上级-{$parent_id}</option>
 											<volist name="managerList" id="vo" key="k">
 												<php>$selected=$k===$parent_id?"selected":"";</php>
 												<option value="{$k}" {$selected}>{$vo}</option>
