@@ -165,7 +165,19 @@ class AdminPerfController extends AdminbaseController {
     }
     
     function delete() {
-    
+        if(isset($_GET['id'])){
+            $id = intval(I("get.id"));
+            if($this->PayMngDao->where('pid=' . $id)->delete()) {
+                if ($this->Dao->delete($id)) {
+                    $this->success("删除成功！", U("AdminPerf/index"), true);
+                } else {
+                    $this->error("删除失败！");
+                }
+            }else {
+                $this->error("删除失败！");
+            }
+        }
+    /*
         if(isset($_POST['ids'])){
             $ids = implode(",", $_POST['ids']);
             if ($this->Dao->where("id in ($ids)")->delete()) {
@@ -183,6 +195,7 @@ class AdminPerfController extends AdminbaseController {
                 }
             }
         }
+    */
     }
     
     function add_broker() {
