@@ -209,10 +209,17 @@ class AdminPerfController extends AdminbaseController {
 
         $year = date('Y', strtotime($date));
         $month = date('n', strtotime($date));
-        $lastTotal = $this->Dao
+
+        $perfObj = $this->Dao
+            ->field('SUM(agency+estimate+service+others) AS total_perf, SUM(bkg) AS total_bkg')
             ->where("bid=" . $bid . " AND YEAR(date)='" . $year . "' AND MONTH(date)='" . $month . "'")
             ->sum('agency+estimate+service+others');
-        if($lastTotal == null) $lastTotal = 0;
+        
+        $perfTotal = $perfObj['total_perf'];
+        $bkgTotal = $perfObj['total_bkg'];
+        
+        if($perfTotal == null) $perfTotal = 0;
+        if($bkgTotal == null) $bkgTotal = 0;
         
         $broker = $this->BrokerDao
             ->join('sd_rank ON sd_rank.id = sd_broker.rank_id')
@@ -223,7 +230,7 @@ class AdminPerfController extends AdminbaseController {
         $rank_id = $broker['rank_id'];
         $rank_name = $broker['rank_name'];
         $result = array();
-        $result['bkg'] = getBrokerageByRank($rank_id, $total+$lastTotal);
+        $result['bkg'] = getBrokerageByRank($rank_id, $total+$perfTotal) - $bkgTotal;
         $result['rank'] = $rank_name;
         echo json_encode($result);
     }
