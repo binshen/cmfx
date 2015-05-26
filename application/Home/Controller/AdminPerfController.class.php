@@ -124,7 +124,7 @@ class AdminPerfController extends AdminbaseController {
         }
     }
     
-    private function calculateManagerPerformance($id) {
+    private function calculateManagerPerformance($perf_id) {
         
         extract($_POST);
         $broker = $this->BrokerDao->field('parent_id')->where('id=' . $bid)->find();
@@ -135,7 +135,7 @@ class AdminPerfController extends AdminbaseController {
         
         $data = array();
         $data['sid'] = $parent_id;
-        $data['pid'] = id;
+        $data['pid'] = $perf_id;
         $payMng = $this->PayMngDao->where($data)->find();        
         if(empty($payMng)) {
             $data['bonus'] = floatval($perf) * 0.3;
