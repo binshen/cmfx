@@ -12,6 +12,7 @@ class AdminPaybController extends AdminbaseController {
         $this->Daoperf = D("Home/Perf");
         $this->Daol = D("Home/PayLog");
         $this->Daop = D("Home/Project");
+        $this->Daob = D("Home/Broker");
     }
     
     function index(){
@@ -63,7 +64,7 @@ class AdminPaybController extends AdminbaseController {
         	->join("sd_broker ON sd_perf.bid = sd_broker.id","left")
         	->join("sd_rank ON sd_broker.rank_id = sd_rank.id","left")
     		->where("pid=".$pid." and DATE_FORMAT(sd_perf.date,'%Y-%m')='".$date."'")	
-    		->field("sd_perf.*,sd_broker.name bname,tel,sd_rank.name rname")
+    		->field("sd_perf.*,sd_broker.name bname,tel,sd_rank.name rname,(agency+estimate+service+others) yeji")
     		->select();
     	
     	$this->assign('payb', $payb);
@@ -73,15 +74,27 @@ class AdminPaybController extends AdminbaseController {
     
     function edit_post() {
     	$id = $_POST['id'];
-		$pay = $_POST['pay'];
+		$pay_arr = $_POST['pay'];
 		$pay_all_arr = $_POST['pay_all'];
 		$bid_arr = $_POST['bid'];
-		
+		$yeji_arr = $_POST['yeji'];
 		foreach($id as $k=>$v){
-			if($pay[$k]){
+			if($pay_arr[$k]){
 				$bid = $bid_arr[$k];
-				die($bid);
+				$pid = $this->Daob
+						->where('id='.$bid)
+						->find();
 				
+				//dump($pid["parent_id"]);
+				
+				if($pid["parent_id"] == 0){//最顶级店长
+					$pay = $pay_arr[$k];
+					$pay_all = $pay_all_arr[$k];
+					$yeji = $yeji_arr[$k];
+					
+					
+					
+				}
 				
 				
 /*				$log = array(
