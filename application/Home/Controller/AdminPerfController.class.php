@@ -146,26 +146,26 @@ class AdminPerfController extends AdminbaseController {
             $data['type'] = 1;
             $this->PayMngDao->add($data);
         } else {
-            $payMng['bonus'] = floatval($perf) * 0.3;
+            $payMng['bonus'] += floatval($perf) * 0.3;
             $data['type'] = 1;
             $this->PayMngDao->save($payMng);
         }
         
-        $broker = $this->BrokerDao->field('parent_id')->where('id=' . $parent_id)->find();
-        $parent_id = $broker['parent_id'];
-        if($parent_id <= 0) return;
+//         $broker = $this->BrokerDao->field('parent_id')->where('id=' . $parent_id)->find();
+//         $parent_id = $broker['parent_id'];
+//         if($parent_id <= 0) return;
                 
-        $data['sid'] = $parent_id;
-        $payMng = $this->PayMngDao->where($data)->find();
-        if(empty($payMng)) {
-            $data['bonus'] = floatval($perf) * 0.15;
-            $data['type'] = 2;
-            $this->PayMngDao->add($data);
-        } else {
-            $payMng['bonus'] = floatval($perf) * 0.15;
-            $data['type'] = 2;
-            $this->PayMngDao->save($payMng);
-        }
+//         $data['sid'] = $parent_id;
+//         $payMng = $this->PayMngDao->where($data)->find();
+//         if(empty($payMng)) {
+//             $data['bonus'] = floatval($perf) * 0.15;
+//             $data['type'] = 2;
+//             $this->PayMngDao->add($data);
+//         } else {
+//             $payMng['bonus'] += floatval($perf) * 0.15;
+//             $data['type'] = 2;
+//             $this->PayMngDao->save($payMng);
+//         }
     }
     
     function delete() {
