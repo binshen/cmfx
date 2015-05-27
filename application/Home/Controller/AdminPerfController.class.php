@@ -102,7 +102,7 @@ class AdminPerfController extends AdminbaseController {
                 if ($this->Dao->create()) {
                     $id = $this->Dao->add();
                     if ($id !== false) {
-                        $this->calculateManagerPerformance($id);
+                        $this->calculateManagerPerf($id);
                         
                         $this->success("添加成功！", U("AdminPerf/index"), true);
                     } else {
