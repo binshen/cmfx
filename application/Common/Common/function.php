@@ -1438,3 +1438,38 @@ function checkDateIsValid($date, $formats = array("Y-m-d")) {
     }
     return false;
 }
+
+function getSelfStoreProfit($sid, $month) {
+    //业务员
+    $broberList = D("Home/Broker")->where('parent_id=' . $sid)->select();
+    
+    $bIDs = array();
+    foreach ($broberList as $b) {
+        $bIDs[] = $b['id'];
+    }
+
+    $date = $month . '-15';
+    
+    //业绩
+    $map = array();
+    $map["bid"] = array('IN', $bIDs);
+    $map["DATE_FORMAT(sd_perf.date,'%Y-%m')"] = $month;
+    $perfObj = D("Home/Perf")
+        ->field('SUM(perf) AS total_perf, SUM(bkg) AS total_bkg')
+        ->where($map)
+        ->find();
+    if(!empty($perfObj)) {
+        $perfTotal = $perfObj['total_perf'];
+        $bkgTotal = $perfObj['total_bkg'];
+    } else {
+        $perfTotal = $bkgTotal = 0;
+    }
+    
+    //业务员人数
+    $brokerCount = D("Home/Broker")->where("parent_id=" . $sid . " AND date<'" . $date . "' AND rank_id<6")->count();
+  
+    //店损
+    $store = D("Home/Store")->getByManagerId($sid);
+
+    return floatval($perfTotal) - floatval($bkgTotal) - floatval($store['loss']) - 2000 * $brokerCount;
+}

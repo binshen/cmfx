@@ -1,0 +1,1 @@
+<?phpnamespace Home\Controller;use Common\Controller\AdminbaseController;class TestController extends AdminbaseController {        function _initialize() {                parent::_initialize();    }        function index(){                echo getSelfStoreProfit(1, '2015-05');    }}
