@@ -158,11 +158,11 @@ class AdminPerfController extends AdminbaseController {
         $data['sid'] = $parent_id;
         $payMng = $this->PayMngDao->where($data)->find();
         if(empty($payMng)) {
-            $data['bonus'] = floatval($perf) * 0.3 * 0.15;
+            $data['bonus'] = floatval($perf) * 0.15;
             $data['type'] = 2;
             $this->PayMngDao->add($data);
         } else {
-            $payMng['bonus'] = floatval($perf) * 0.3 * 0.15;
+            $payMng['bonus'] = floatval($perf) * 0.15;
             $data['type'] = 2;
             $this->PayMngDao->save($payMng);
         }
