@@ -19,7 +19,7 @@ class AdminBrokerController extends AdminbaseController {
     	$page = $this->page($count, 20);
     	
         $brokerList = $this->Dao
-            ->join('sd_rank ON sd_broker.rank_id = sd_rank.id')
+            ->join('sd_rank ON sd_broker.rank_id = sd_rank.id', 'left')
             ->field('sd_broker.*, sd_rank.name AS rank')
             ->limit($page->firstRow . ',' . $page->listRows)
             ->select();

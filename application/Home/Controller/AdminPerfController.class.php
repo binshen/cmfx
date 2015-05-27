@@ -43,8 +43,8 @@ class AdminPerfController extends AdminbaseController {
         
         $perfList = $this->Dao
             ->join("sd_type ON sd_type.id = sd_perf.tid")
-            ->join("sd_project ON sd_project.id = sd_perf.pid")
-            ->join("sd_broker ON sd_broker.id = sd_perf.bid")
+            ->join("sd_project ON sd_project.id = sd_perf.pid", 'left')
+            ->join("sd_broker ON sd_broker.id = sd_perf.bid", 'left')
             ->field("sd_perf.*, sd_type.name AS tname, sd_project.name AS pname, sd_broker.name AS bname, sd_type.discount, DATE_FORMAT(sd_perf.date,'%Y-%m') AS month")
             ->where($map)
             ->order("sd_perf.date DESC")
@@ -80,7 +80,7 @@ class AdminPerfController extends AdminbaseController {
         $id = I('get.id', 0, 'intval');
         $perf = $this->Dao
             ->join('sd_broker ON sd_broker.id = sd_perf.bid')
-            ->join('sd_rank ON sd_rank.id = sd_broker.rank_id')
+            ->join('sd_rank ON sd_rank.id = sd_broker.rank_id', 'left')
             ->field('sd_perf.*, sd_rank.name AS rank_name')
             ->where('sd_perf.id=' . $id)
             ->find();
@@ -231,7 +231,7 @@ class AdminPerfController extends AdminbaseController {
         if($bkgTotal == null) $bkgTotal = 0;
         
         $broker = $this->BrokerDao
-            ->join('sd_rank ON sd_rank.id = sd_broker.rank_id')
+            ->join('sd_rank ON sd_rank.id = sd_broker.rank_id', 'left')
             ->field('sd_broker.rank_id, sd_rank.name AS rank_name')
             ->where('sd_broker.id=' . $bid)
             ->find();
