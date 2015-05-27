@@ -28,7 +28,15 @@
 	      	</thead>
 	      	<foreach name="payb" item="vo">
         	<tr>
-        		<td>{$vo.bname}({$vo.rname})<input type="hidden" name="id[]" value="{$vo.id}"><input type="hidden" name="yeji[]" value="{$vo.yeji}"><input type="hidden" name="bid[]" value="{$vo.bid}"></td>
+        		<td>{$vo.bname}({$vo.rname})
+        		<input type="hidden" name="id[]" value="{$vo.id}">
+        		<input type="hidden" name="perf[]" value="{$vo.perf}">
+        		<input type="hidden" name="bid[]" value="{$vo.bid}">
+        		<input type="hidden" name="parent_id" value="{$vo.parent_id}">
+        		<input type="hidden" name="mn[]" value="{$vo.mn}">
+        		<input type="hidden" name="t[]" value="{$vo.t}">
+        		
+        		</td>
         		<td><font color="green" size="3"><a href="javascript:;" onclick="c_bkg(this);">{$vo.bkg}</a><input type="hidden" name="pay_all[]" value="{$vo.bkg}"></font></td>
         		<td><font color="red" size="3"><php>echo $vo['payd']?$vo['payd']:'0.00'</php></font></td>
         		<td><input type="text" name="pay[]" style="height:14px;"></td>
