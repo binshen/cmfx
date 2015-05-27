@@ -13,6 +13,7 @@ class AdminPaybController extends AdminbaseController {
         $this->Daol = D("Home/PayLog");
         $this->Daop = D("Home/Project");
         $this->Daob = D("Home/Broker");
+        $this->Daopay = D("Home/PayMng");
     }
     
     function index(){
@@ -60,13 +61,28 @@ class AdminPaybController extends AdminbaseController {
 	    	->find();
     	$paya['date'] = $date;
     	
-    	$payb = $this->Daoperf
-        	->join("sd_broker ON sd_perf.bid = sd_broker.id","left")
-        	->join("sd_rank ON sd_broker.rank_id = sd_rank.id","left")
-    		->where("pid=".$pid." and DATE_FORMAT(sd_perf.date,'%Y-%m')='".$date."'")	
-    		->field("sd_perf.*,sd_broker.name bname,tel,sd_rank.name rname,(agency+estimate+service+others) yeji")
-    		->select();
-    	
+    	$Model = new \Think\Model();
+    	 
+    	$sql = "select 
+				b.`name` bname, b.rank_id, a.bkg, a.payd, a.agency, a.id,sd_rank.name rname,a.num,a.perf,a.bid,b.parent_id,
+				(
+				select 
+				sum(sd_perf.perf)
+				from sd_perf 
+				join sd_broker on sd_perf.bid = sd_broker.id
+				where DATE_FORMAT(sd_perf.date,'%Y-%m') = '".$date."' AND sd_broker.parent_id = b.parent_id and sd_perf.pid = ".$pid."
+				) as mn,
+				(
+					select sum(sd_pay_mng.bonus) from sd_pay_mng 
+					join sd_perf on sd_pay_mng.pid = sd_perf.id
+					where DATE_FORMAT(sd_perf.date,'%Y-%m') = '".$date."' and sd_pay_mng.sid = b.parent_id and sd_perf.pid = ".$pid."
+				) as t
+				from sd_perf a
+				join sd_broker b on a.bid = b.id
+				join sd_rank on b.rank_id = sd_rank.id
+				where DATE_FORMAT(a.date,'%Y-%m') = '".$date."' and a.pid = ".$pid;
+    	$payb = $Model->query($sql);
+    	 
     	$this->assign('payb', $payb);
     	$this->assign($paya);
     	$this->display();
@@ -77,37 +93,28 @@ class AdminPaybController extends AdminbaseController {
 		$pay_arr = $_POST['pay'];
 		$pay_all_arr = $_POST['pay_all'];
 		$bid_arr = $_POST['bid'];
-		$yeji_arr = $_POST['yeji'];
+		$perf_arr = $_POST['perf'];
+		$parent_id_arr = $_POST['parent_id'];
+		$mn_arr = $_POST['mn'];
+		$t_arr = $_POST['t'];
+		$date = $_POST['date'];
 		foreach($id as $k=>$v){
 			if($pay_arr[$k]){
-				$bid = $bid_arr[$k];
-				$pid = $this->Daob
-						->where('id='.$bid)
-						->find();
-				
-				//dump($pid["parent_id"]);
-				
-				if($pid["parent_id"] == 0){//最顶级店长
-					$pay = $pay_arr[$k];
-					$pay_all = $pay_all_arr[$k];
-					$yeji = $yeji_arr[$k];
-					
-					
-					
-				}
-				
-				
-/*				$log = array(
-						'pay_id'=>$id,
-						'pay'=>$pay[$k],
-						'cdate'=>date('Y-m-d H:i:s',time())
-				);*/
-				
-				
-				
-				
-/*				$this->Daoperf->where('id='.$id[$k])->setInc('payd',$pay[$k]);
-				$this->Daol->add($log);*/
+				$pay = $pay_arr[$k];
+				$pay_all = $pay_all_arr[$k];
+				$perf = $perf_arr[$k];
+				$z = $perf/$mn_arr[$k];
+				$t = $t_arr[$k];
+				$this->Daopay->where('pid='.$v)->setInc('pay',$pay/$pay_all*$z*$t);
+				$this->Daoperf->where('id='.$v)->setInc('payd',$pay);
+				$log = array(
+						'pid'=>$v,
+						'bid'=>$bid_arr[$k],
+						'date'=>substr($date,0,4).substr($date,5,2),	
+						'pay'=>$pay,
+						'created'=>date('Y-m-d H:i:s',time())
+				);
+				$this->Daol->add($log);
 				
 			}
 		}
