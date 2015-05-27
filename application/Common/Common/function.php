@@ -1473,3 +1473,19 @@ function getSelfStoreProfit($sid, $month) {
 
     return floatval($perfTotal) - floatval($bkgTotal) - floatval($store['loss']) - 2000 * $brokerCount;
 }
+
+function getSubStoreProfit($sid, $month) {
+    
+    $profit = 0;
+    $storeList = D("Home/Broker")->where('parent_id=' . $sid . ' AND rank_id=6')->select();
+    foreach ($storeList as $s) {
+        $bid = $s['id'];
+        $profit += getSelfStoreProfit($bid, $month);
+    }
+    return $profit;
+}
+
+function getManagerProfile($sid, $month) {
+    
+    return getSelfStoreProfit($sid, $month) * 0.3 + getSubStoreProfit($sid, $month) * 0.15;
+}
