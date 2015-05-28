@@ -1494,5 +1494,20 @@ function getSubStoreProfit($sid, $month) {
 
 function getManagerProfile($sid, $month) {
     
-    return getSelfStoreProfit($sid, $month) * 0.3 + getSubStoreProfit($sid, $month) * 0.15;
+    return getSelfStoreProfit($sid, $month) + getSubStoreProfit($sid, $month) * 0.5;
+}
+
+function getMonthList($start, $end) {
+    $start = empty($start) ? date('Y-m',strtotime('-1 month')) : $start;
+    $end = empty($end) ? date('Y-m') : $end;
+    $st = strtotime($start.'-01');
+    $et = strtotime($end.'-01');
+    $t = $st;
+    $i = 0;
+    while($t <= $et){
+        $d[$i] = trim(date('Y-m',$t),' ');
+        $t += strtotime('+1 month', $t)-$t;
+        $i++;
+    }
+    return $d;
 }

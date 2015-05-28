@@ -6,31 +6,31 @@
      	<li><a href="{:U('AdminPerf/add')}" class="J_dialog" title="业绩录入">业绩录入</a></li>
   	</ul>
   	<form class="well form-search" method="post" id="cid_form" action="{:U('AdminPerf/index')}">
-			<div class="search_type cc mb10">
-				<div class="mb10">
-					楼盘：
-					<select class="select_2" name="project" id="project">
-						<option value="">- 选择楼盘 -</option>
-						<volist name="projectList" id="vo">
-							<php>$selected=$vo['id']===$project?"selected":"";</php>
-							<option value="{$vo.id}" {$selected}>{$vo.name}</option>
-						</volist>
-					</select>&nbsp;&nbsp;
-					业务员：
-					<select class="select_2" name="broker" id="broker">
-						<option value="">- 选择业务员 -</option>
-						<volist name="brokerList" id="vo">
-							<php>$selected=$vo['id']===$broker?"selected":"";</php>
-							<option value="{$vo.id}" {$selected}>{$vo.name}</option>
-						</volist>
-					</select>&nbsp;&nbsp;
-					月份：
-					<input type="text" name="date" id="date" class="input" style="width:80px;" value="{$date}" />&nbsp;&nbsp;
-					<input class="btn btn-primary btn-big" type="submit" value="搜索">
-					<input class="btn btn-primary btn-big" type="button" value="清除" id="btnClear">
-				</div>
+		<div class="search_type cc mb10">
+			<div class="mb10">
+				楼盘：
+				<select class="select_2" name="project" id="project">
+					<option value="">- 选择楼盘 -</option>
+					<volist name="projectList" id="vo">
+						<php>$selected=$vo['id']===$project?"selected":"";</php>
+						<option value="{$vo.id}" {$selected}>{$vo.name}</option>
+					</volist>
+				</select>&nbsp;&nbsp;
+				业务员：
+				<select class="select_2" name="broker" id="broker">
+					<option value="">- 选择业务员 -</option>
+					<volist name="brokerList" id="vo">
+						<php>$selected=$vo['id']===$broker?"selected":"";</php>
+						<option value="{$vo.id}" {$selected}>{$vo.name}</option>
+					</volist>
+				</select>&nbsp;&nbsp;
+				月份：
+				<input type="text" name="date" id="date" class="input" style="width:80px;" value="{$date}" maxlength="6" />&nbsp;&nbsp;
+				<input class="btn btn-primary btn-big" type="submit" value="搜索">
+				<input class="btn btn-primary btn-big" type="button" value="清除" id="btnClear">
 			</div>
-		</form>
+		</div>
+	</form>
   	<form class="J_ajaxForm" action="" method="post">
       	<table class="table table-hover table-bordered table-list">
           	<thead>
