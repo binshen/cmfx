@@ -1,1 +1,0 @@
-<?phpnamespace Home\Controller;use Common\Controller\AdminbaseController;class AdminReportController extends AdminbaseController {        protected $Dao;        function _initialize() {                parent::_initialize();        $this->Dao = D("Home/Perf");    }        function index(){                $this->display();    }}
