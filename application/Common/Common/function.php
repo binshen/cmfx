@@ -1443,7 +1443,7 @@ function getSelfStoreProfit($sid, $month) {
     //业务员
     $broberList = D("Home/Broker")->where('parent_id=' . $sid)->select();
     
-    $bIDs = array();
+    $bIDs = array($sid);
     foreach ($broberList as $b) {
         $bIDs[] = $b['id'];
     }
