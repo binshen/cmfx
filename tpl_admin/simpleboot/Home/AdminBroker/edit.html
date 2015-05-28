@@ -41,10 +41,10 @@
 									<td>
 										<select id="parent_id" name="parent_id" >
 											<option value="0">-请选择上级-</option>
-											<volist name="managerList" id="vo" key="k">
+											<foreach name="managerList" item="vo" key="k">
 												<php>$selected=$k==$parent_id?"selected":"";</php>
 												<option value="{$k}" {$selected}>{$vo}</option>
-											</volist>
+											</foreach>
 										</select>
 										<span class="must_red">*</span>
 									</td>
