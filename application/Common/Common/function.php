@@ -1448,7 +1448,6 @@ function getSelfStoreProfit($sid, $month) {
         $bIDs[] = $b['id'];
     }
 
-    $date = $month . '-15';
     
     //业绩
     $map = array();
@@ -1466,14 +1465,21 @@ function getSelfStoreProfit($sid, $month) {
         $totalPerf = 0;
     }
     
-    //业务员人数
-    $brokerCount = D("Home/Broker")->where("parent_id=" . $sid . " AND date<'" . $date . "' AND rank_id<6")->count();
-  
-    //店损
-    $store = D("Home/Store")->getByManagerId($sid);
+    
+    $loss = getSelfStoreLoss($sid,$month);
 
-    return $totalPerf - floatval($store['loss']) - 2000 * $brokerCount;
+    return $totalPerf - $loss;
 }
+
+function getSelfStoreLoss($sid, $month){
+	$date = $month . '-15';
+	//业务员人数
+	$brokerCount = D("Home/Broker")->where("parent_id=" . $sid . " AND date<'" . $date . "' AND rank_id<6")->count();
+	//店损
+	$store = D("Home/Store")->getByManagerId($sid);
+	return (floatval($store['loss']) + 2000 * $brokerCount);
+}
+
 
 function getSubStoreProfit($sid, $month) {
     

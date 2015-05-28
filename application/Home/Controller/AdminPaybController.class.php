@@ -17,15 +17,6 @@ class AdminPaybController extends AdminbaseController {
     }
     
     function index(){
-/*    	$paybList = $this->Dao
-    		->join("sd_payb ON sd_paya.id = sd_payb.pay_id","left")
-    		->join("sd_project ON sd_paya.pid = sd_project.id","left")
-    		->field("sd_paya.*, sum(pay) pay,sum(payd) payd,name")
-    		->group("pay_id")
-    		->select();
-    	$this->assign('paybList', $paybList);
-        $this->display('AdminPayb:index');*/
-    	
     	$count = $this->Daoperf
 	    	->join("sd_project ON sd_perf.pid = sd_project.id","left")
         	->field("1")
@@ -46,8 +37,6 @@ class AdminPaybController extends AdminbaseController {
 
         $this->assign('paybList', $paybList);
         $this->display('AdminPayb:index');
-        
-        
         
     }
     
