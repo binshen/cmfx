@@ -24,6 +24,11 @@ class AdminPerfController extends AdminbaseController {
     
         $map = array();
         if(IS_POST) {
+            $broker = I('post.broker');
+            if(!empty($broker)) {
+                $map['bid'] = $broker;
+            }
+            
             $project = I('post.project');
             if(!empty($project)) {
                 $map['pid'] = $project;
@@ -34,6 +39,7 @@ class AdminPerfController extends AdminbaseController {
                 $map["DATE_FORMAT(sd_perf.date,'%Y%m')"] = $date;
             }
             
+            $this->assign('broker', $broker);
             $this->assign('project', $project);
             $this->assign('date', $date);
         }
@@ -55,6 +61,9 @@ class AdminPerfController extends AdminbaseController {
         
         $projectList = $this->ProjectDao->order('name')->select();
         $this->assign('projectList', $projectList);
+        
+        $brokerList = $this->BrokerDao->where('status=1')->order('name')->select();
+        $this->assign('brokerList', $brokerList);
         
         $this->assign('perfList', $perfList);
     

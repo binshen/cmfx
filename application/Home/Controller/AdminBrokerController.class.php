@@ -54,10 +54,6 @@ class AdminBrokerController extends AdminbaseController {
     }
     
     function edit_post() {
-/*        if($_POST['rank_id'] == 6){
-        	$_POST['parent_id'] = 0;
-        }*/
-    	
         if(empty($_POST['id'])) {
             if ($this->Dao->create()) {
                 if ($this->Dao->add()!==false) {
