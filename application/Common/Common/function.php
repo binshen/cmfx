@@ -1443,7 +1443,7 @@ function getSelfStoreProfit($sid, $month) {
     //业务员
     $broberList = D("Home/Broker")->where('parent_id=' . $sid)->select();
     
-    $bIDs = array($sid);
+    $bIDs = array();
     foreach ($broberList as $b) {
         $bIDs[] = $b['id'];
     }
@@ -1461,8 +1461,9 @@ function getSelfStoreProfit($sid, $month) {
     if(!empty($perfObj)) {
         $perfTotal = $perfObj['total_perf'];
         $bkgTotal = $perfObj['total_bkg'];
+        $totalPerf = floatval($perfTotal) - floatval($bkgTotal);
     } else {
-        $perfTotal = $bkgTotal = 0;
+        $totalPerf = 0;
     }
     
     //业务员人数
@@ -1471,7 +1472,7 @@ function getSelfStoreProfit($sid, $month) {
     //店损
     $store = D("Home/Store")->getByManagerId($sid);
 
-    return floatval($perfTotal) - floatval($bkgTotal) - floatval($store['loss']) - 2000 * $brokerCount;
+    return $totalPerf - floatval($store['loss']) - 2000 * $brokerCount;
 }
 
 function getSubStoreProfit($sid, $month) {
