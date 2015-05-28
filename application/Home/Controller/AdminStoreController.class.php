@@ -5,13 +5,11 @@ use Common\Controller\AdminbaseController;
 class AdminStoreController extends AdminbaseController {
     
     protected $Dao;
-    protected $BrokerDao;
     
     function _initialize() {
         
         parent::_initialize();
         $this->Dao = D("Home/Store");
-        $this->BrokerDao = D("Home/Broker");
     }
     
     function index(){
@@ -92,18 +90,5 @@ class AdminStoreController extends AdminbaseController {
                 }
             }
         }
-    }
-    
-    private function getManagerList() {
-    
-    	$managerList = array();
-    	$managers = $this->BrokerDao
-    	->field('id, name')
-    	->where('rank_id = 6')
-    	->select();
-    	foreach ($managers as $m) {
-    		$managerList[$m['id']] = $m['name'];
-    	}
-    	return $managerList;
     }
 }

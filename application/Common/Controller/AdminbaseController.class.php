@@ -162,4 +162,17 @@ class AdminbaseController extends AppframeController {
     		return true;
     	}
     }
+    
+    protected function getManagerList() {
+    
+        $managerList = array();
+        $managers = D("Home/Broker")
+            ->field('id, name')
+            ->where('rank_id = 6')
+            ->select();
+        foreach ($managers as $m) {
+            $managerList[$m['id']] = $m['name'];
+        }
+        return $managerList;
+    }
 }
