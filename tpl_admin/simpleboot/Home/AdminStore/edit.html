@@ -28,10 +28,10 @@
 									<td>经理:</td>
 									<td>
 										<select id="manager_id" name="manager_id">
-											<volist name="managerList" id="vo" key="k">
+											<foreach name="managerList" item="vo" key="k">
 												<php>$selected=$k===$manager_id_id?"selected":"";</php>
 												<option value="{$k}" {$selected}>{$vo}</option>
-											</volist>
+											</foreach>
 										</select>
 										<span class="must_red">*</span>
 									</td>
