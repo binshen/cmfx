@@ -100,9 +100,8 @@ class AdminPerfController extends AdminbaseController {
             $_POST['perf'] = empty($discount) ? $perf : $perf * $discount;
             if(empty($_POST['id'])) {
                 if ($this->Dao->create()) {
-                    $id = $this->Dao->add();
-                    if ($id !== false) {
-                        $this->calculateManagerPerf($id);
+                    if ($this->Dao->add() !== false) {
+                        $this->calculateManagerPerf($this->Dao->getLastInsID());
                         
                         $this->success("添加成功！", U("AdminPerf/index"), true);
                     } else {
