@@ -151,36 +151,36 @@ class AdminPerfController extends AdminbaseController {
     function delete() {
         if(isset($_GET['id'])){
             $id = intval(I("get.id"));
-            if($this->PayMngDao->where('pid=' . $id)->delete()) {
-                if ($this->Dao->delete($id)) {
-                    $this->success("删除成功！", U("AdminPerf/index"), true);
-                } else {
-                    $this->error("删除失败！");
-                }
-            }else {
+            $perfObj = $this->Dao->getById($id);
+            if ($this->Dao->delete($id)) {
+                $this->PayMngDao->where('pid=' . $id)->delete();
+                $this->updateBrokerBkg($perfObj['bid'], $perfObj['date']);
+                
+                $this->success("删除成功！", U("AdminPerf/index"), true);
+            } else {
                 $this->error("删除失败！");
             }
         }
     }
     
-    function add_broker() {
+    private function updateBrokerBkg($bid, $date) {
+
+        $rank_id = $this->BrokerDao->getFieldById($bid, 'rank_id');
         
-        $brokerList = $this->BrokerDao->order('name')->select();
-        $this->assign('brokerList', $brokerList);
-        
-        $this->display();
-    }
-    
-    function getBroker() {
-        
-        $id = I('post.id', 0 , 'intval');
-        $pbList = $this->PerfBrokerDao
-            ->join("sd_broker ON sd_broker.id = sd_perf_broker.bid")
-            ->field("sd_perf_broker.*, sd_broker.name AS bname")
-            ->where('sd_perf_broker.pid=' . $id)
+        $year = date('Y', strtotime($date));
+        $month = date('n', strtotime($date));
+
+        $perfList = $this->Dao
+            ->where("bid=" . $bid . " AND YEAR(date)='" . $year . "' AND MONTH(date)='" . $month . "'")
             ->select();
-        
-        echo json_encode($pbList);
+        $total_perf = 0;
+        $total_bkg = 0;
+        foreach ($perfList as $p) {
+            $total_perf += floatval($p['perf']);
+            $total_bkg += floatval($p['bkg']); 
+            $p['bkg'] = getBrokerageByRank($rank_id, $total_perf) - $total_bkg;
+            $this->Dao->save($p);
+        }
     }
     
     function get_calculated_perf() {
