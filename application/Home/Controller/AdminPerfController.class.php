@@ -53,7 +53,7 @@ class AdminPerfController extends AdminbaseController {
             ->join("sd_broker ON sd_broker.id = sd_perf.bid", 'left')
             ->field("sd_perf.*, sd_type.name AS tname, sd_project.name AS pname, sd_broker.name AS bname, sd_type.discount, DATE_FORMAT(sd_perf.date,'%Y-%m') AS month")
             ->where($map)
-            ->order("sd_perf.date DESC")
+            ->order("DATE_FORMAT(sd_perf.date,'%Y-%m') DESC, sd_perf.id DESC")
             ->limit($page->firstRow . ',' . $page->listRows)
             ->select();
         
