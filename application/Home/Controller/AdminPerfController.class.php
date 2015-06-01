@@ -157,7 +157,7 @@ class AdminPerfController extends AdminbaseController {
             $data['bonus'] = floatval($perf) * 0.3;
             $this->PayMngDao->add($data);
         } else {
-            $payMng['bonus'] += floatval($perf) * 0.3;
+            $payMng['bonus'] = floatval($perf) * 0.3;
             $this->PayMngDao->save($payMng);
         }
     }
@@ -180,7 +180,7 @@ class AdminPerfController extends AdminbaseController {
     private function updateBrokerBkg($bid, $date) {
 
         $rank_id = $this->BrokerDao->getFieldById($bid, 'rank_id');
-        
+
         $year = date('Y', strtotime($date));
         $month = date('n', strtotime($date));
 
@@ -191,9 +191,10 @@ class AdminPerfController extends AdminbaseController {
         $total_bkg = 0;
         foreach ($perfList as $p) {
             $total_perf += floatval($p['perf']);
-            $total_bkg += floatval($p['bkg']); 
             $p['bkg'] = getBrokerageByRank($rank_id, $total_perf) - $total_bkg;
             $this->Dao->save($p);
+            
+            $total_bkg += $p['bkg'];
         }
     }
     
