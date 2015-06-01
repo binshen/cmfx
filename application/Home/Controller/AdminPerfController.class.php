@@ -161,6 +161,10 @@ class AdminPerfController extends AdminbaseController {
             $this->PayMngDao->save($payMng);
         }
         
+        $parent_id = $broker['parent_id'];
+        if($parent_id <= 0) return;
+        
+        $broker = $this->BrokerDao->field('parent_id')->where('id=' . $parent_id)->find();
         if($broker['parent_id'] <= 0) return;
         
         $data['sid'] = $broker['parent_id'];
