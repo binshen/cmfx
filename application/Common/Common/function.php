@@ -1465,10 +1465,11 @@ function getSelfStoreProfit($sid, $month) {
         $totalPerf = 0;
     }
     
-    
     $loss = getSelfStoreLoss($sid,$month);
 
-    return $totalPerf*0.3 - $loss;
+
+    return $totalPerf * 0.3 - $loss;
+
 }
 
 function getSelfStoreLoss($sid, $month){
