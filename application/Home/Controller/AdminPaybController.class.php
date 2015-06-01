@@ -52,7 +52,7 @@ class AdminPaybController extends AdminbaseController {
     	
     	$Model = new \Think\Model();
     	 
-    	$sql = "select 
+/*    	$sql = "select 
 				b.`name` bname, b.rank_id, a.bkg, a.payd, a.agency, a.id,sd_rank.name rname,a.num,a.perf,a.bid,b.parent_id,
 				(
 				select 
@@ -64,14 +64,21 @@ class AdminPaybController extends AdminbaseController {
 				(
 					select sum(sd_pay_mng.bonus) from sd_pay_mng 
 					join sd_perf on sd_pay_mng.pid = sd_perf.id
-					where DATE_FORMAT(sd_perf.date,'%Y-%m') = '".$date."' and sd_pay_mng.sid = b.parent_id and sd_perf.pid = ".$pid."
+					where DATE_FORMAT(sd_perf.date,'%Y-%m') = '".$date."' and (sd_pay_mng.sid = b.parent_id or sd_pay_mng.sid=b.id) and sd_perf.pid = ".$pid."
 				) as t
 				from sd_perf a
 				join sd_broker b on a.bid = b.id
 				join sd_rank on b.rank_id = sd_rank.id
-				where DATE_FORMAT(a.date,'%Y-%m') = '".$date."' and a.pid = ".$pid;
+				where DATE_FORMAT(a.date,'%Y-%m') = '".$date."' and a.pid = ".$pid;*/
+    	
+    	$sql = "select c.`name` bname, b.bkg, b.payd, b.agency, b.id,d.name rname,b.num,b.perf,b.bid,c.parent_id,a.bonus
+    			from sd_pay_mng a 
+    			left join sd_perf b on a.pid=b.id 
+    			left join sd_broker c on b.bid = c.id
+    			left join sd_rank d on c.rank_id = d.id
+    			where DATE_FORMAT(b.date,'%Y-%m')='".$date."' and b.pid = ".$pid;
+    	
     	$payb = $Model->query($sql);
-    	 
     	$this->assign('payb', $payb);
     	$this->assign($paya);
     	$this->display();
@@ -82,19 +89,19 @@ class AdminPaybController extends AdminbaseController {
 		$pay_arr = $_POST['pay'];
 		$pay_all_arr = $_POST['pay_all'];
 		$bid_arr = $_POST['bid'];
-		$perf_arr = $_POST['perf'];
-		$parent_id_arr = $_POST['parent_id'];
-		$mn_arr = $_POST['mn'];
-		$t_arr = $_POST['t'];
 		$date = $_POST['date'];
+		$payd_arr = $_POST['payd'];
+		$bonus_arr = $_POST['bonus'];
+		
+		
 		foreach($id as $k=>$v){
 			if($pay_arr[$k]){
 				$pay = $pay_arr[$k];
 				$pay_all = $pay_all_arr[$k];
-				$perf = $perf_arr[$k];
-				$z = $perf/$mn_arr[$k];
-				$t = $t_arr[$k];
-				$this->Daopay->where('pid='.$v)->setInc('pay',$pay/$pay_all*$z*$t);
+				$payd = $payd_arr[$k];
+				$bonus = $bonus_arr[$k];
+				
+				$this->Daopay->where('pid='.$v)->save(array('pay'=>($payd+$pay)/$pay_all*$bonus));
 				$this->Daoperf->where('id='.$v)->setInc('payd',$pay);
 				$log = array(
 						'pid'=>$v,
