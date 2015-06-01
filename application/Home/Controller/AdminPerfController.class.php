@@ -157,7 +157,7 @@ class AdminPerfController extends AdminbaseController {
             $data['bonus'] = floatval($perf) * 0.3;
             $this->PayMngDao->add($data);
         } else {
-            $payMng['bonus'] += floatval($perf) * 0.3;
+            $payMng['bonus'] = floatval($perf) * 0.3;
             $this->PayMngDao->save($payMng);
         }
     }
