@@ -1443,12 +1443,11 @@ function getSelfStoreProfit($sid, $month) {
     //业务员
     $broberList = D("Home/Broker")->where('parent_id=' . $sid)->select();
     
-    $bIDs = array();
+    $bIDs = array($sid);
     foreach ($broberList as $b) {
         $bIDs[] = $b['id'];
     }
 
-    
     //业绩
     $map = array();
     $map["bid"] = array('IN', $bIDs);
@@ -1466,7 +1465,6 @@ function getSelfStoreProfit($sid, $month) {
     }
     
     $loss = getSelfStoreLoss($sid,$month);
-
 
     return $totalPerf * 0.3 - $loss;
 
