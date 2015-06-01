@@ -160,6 +160,17 @@ class AdminPerfController extends AdminbaseController {
             $payMng['bonus'] = floatval($perf) * 0.3;
             $this->PayMngDao->save($payMng);
         }
+        
+        if($broker['parent_id'] <= 0) return;
+        
+        $data['sid'] = $broker['parent_id'];
+        $payMng = $this->PayMngDao->where($data)->find();
+        $data['bonus'] = 0;
+        if(empty($payMng)) {
+            $this->PayMngDao->add($data);
+        } else {
+            $this->PayMngDao->save($payMng);
+        }
     }
     
     function delete() {
