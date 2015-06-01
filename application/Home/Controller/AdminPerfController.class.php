@@ -138,8 +138,13 @@ class AdminPerfController extends AdminbaseController {
     private function calculateManagerPerf($perf_id) {
         
         extract($_POST);
-        $broker = $this->BrokerDao->field('parent_id')->where('id=' . $bid)->find();
-        $parent_id = $broker['parent_id'];
+        $broker = $this->BrokerDao->where('id=' . $bid)->find();
+        $rank_id = $broker['rank_id'];
+        if($rank_id == 6) {
+            $parent_id = $bid;
+        } else {
+            $parent_id = $broker['parent_id'];
+        }
         if($parent_id <= 0) return;
         
         $perf = floatval($perf) - floatval($bkg);
