@@ -4,4 +4,4 @@
  */
 @session_start();
 $_SESSION['adminlogin'] = 1;
-header("Location: ../index.php?g=admin");
+//header("Location: ../index.php?g=admin");
