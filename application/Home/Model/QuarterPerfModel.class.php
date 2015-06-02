@@ -1,0 +1,1 @@
+<?phpnamespace Home\Model;use Common\Model\CommonModel;class QuarterPerfModel extends CommonModel{        protected $tablePrefix = 'sd_';}

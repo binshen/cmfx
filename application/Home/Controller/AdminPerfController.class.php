@@ -9,6 +9,7 @@ class AdminPerfController extends AdminbaseController {
     protected $BrokerDao;
     protected $TypeDao;
     protected $PayMngDao;
+    protected $QuarterPerfDao;
     
     function _initialize() {
     
@@ -18,6 +19,7 @@ class AdminPerfController extends AdminbaseController {
         $this->BrokerDao = D("Home/Broker");
         $this->TypeDao = D("Home/Type");
         $this->PayMngDao = D("Home/PayMng");
+        $this->QuarterPerfDao =D("Home/QuarterPerf");
     }
     
     function index(){
@@ -51,9 +53,9 @@ class AdminPerfController extends AdminbaseController {
             ->join("sd_type ON sd_type.id = sd_perf.tid")
             ->join("sd_project ON sd_project.id = sd_perf.pid", 'left')
             ->join("sd_broker ON sd_broker.id = sd_perf.bid", 'left')
-            ->field("sd_perf.*, sd_type.name AS tname, sd_project.name AS pname, sd_broker.name AS bname, sd_type.discount, DATE_FORMAT(sd_perf.date,'%Y-%m') AS month")
+            ->field("sd_perf.*, sd_type.name AS tname, sd_project.name AS pname, sd_broker.name AS bname, sd_type.discount, sd_perf.date")
             ->where($map)
-            ->order("DATE_FORMAT(sd_perf.date,'%Y-%m') DESC, sd_perf.id DESC")
+            ->order("sd_perf.date DESC")
             ->limit($page->firstRow . ',' . $page->listRows)
             ->select();
         
@@ -138,8 +140,20 @@ class AdminPerfController extends AdminbaseController {
     private function calculateManagerPerf($perf_id) {
         
         extract($_POST);
+        
+        $year = date('Y', strtotime($date));
+        $quarter = ceil(date('m', strtotime($date)) / 3);
+        
         $broker = $this->BrokerDao->where('id=' . $bid)->find();
         $rank_id = $broker['rank_id'];
+        if($rank_id = 3) {
+            $this->QuarterPerfDao->where('bid=' . $bid . ' AND year=' . $year . ' AND quarter=' . $quarter)->setInc('perf', $perf * 0.05);
+        } else if($rank_id = 4) {
+            $this->QuarterPerfDao->where('bid=' . $bid . ' AND year=' . $year . ' AND quarter=' . $quarter)->setInc('perf', $perf * 0.10);
+        } else if($rank_id = 5) {
+            $this->QuarterPerfDao->where('bid=' . $bid . ' AND year=' . $year . ' AND quarter=' . $quarter)->setInc('perf', $perf * 0.15);
+        }
+        
         if($rank_id == 6) {
             $parent_id = $bid;
         } else {

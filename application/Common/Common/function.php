@@ -1473,7 +1473,7 @@ function getSelfStoreProfit($sid, $month) {
 function getSelfStoreLoss($sid, $month){
 	$date = $month . '-15';
 	//业务员人数
-	$brokerCount = D("Home/Broker")->where("parent_id=" . $sid . " AND date<'" . $date . "' AND rank_id<6")->count();
+	$brokerCount = D("Home/Broker")->where("parent_id=" . $sid . " AND date<'" . $date . "' AND rank_id=1")->count();
 	//店损
 	$store = D("Home/Store")->getByManagerId($sid);
 	return (floatval($store['loss']) + 2000 * $brokerCount);
