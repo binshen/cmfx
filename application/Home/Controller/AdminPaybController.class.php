@@ -17,10 +17,27 @@ class AdminPaybController extends AdminbaseController {
     }
     
     function index(){
+    	$map = array();
+    	if(IS_POST) {
+    		$project = I('post.project');
+    		if(!empty($project)) {
+    			$map['pid'] = $project;
+    		}
+    	
+    		$date = I('post.date');
+    		if(!empty($date)) {
+    			$map["DATE_FORMAT(date,'%Y%m')"] = $date;
+    		}
+    	
+    		$this->assign('project', $project);
+    		$this->assign('date', $date);
+    	}
+    	
     	$count = $this->Daoperf
 	    	->join("sd_project ON sd_perf.pid = sd_project.id","left")
         	->field("1")
 	        ->group("pid,date")
+	        ->where($map)
 	        ->select();
         
     	$page = $this->page(count($count), 20);
@@ -28,6 +45,7 @@ class AdminPaybController extends AdminbaseController {
         $paybList = $this->Daoperf
         	->join("sd_project ON sd_perf.pid = sd_project.id","left")
         	->field("sd_perf.*, sum(bkg) pay,sum(payd) payd,name,DATE_FORMAT(date,'%Y-%m') date")
+        	->where($map)
         	->order("DATE_FORMAT(date,'%Y-%m') desc")
 	        ->group("pid,DATE_FORMAT(date,'%Y-%m')")
 	        ->limit($page->firstRow . ',' . $page->listRows)
@@ -35,6 +53,9 @@ class AdminPaybController extends AdminbaseController {
         
         $this->assign("page", $page->show('Admin'));
 
+        $projectList = $this->Daop->order('name')->select();
+        $this->assign('projectList', $projectList);
+        
         $this->assign('paybList', $paybList);
         $this->display('AdminPayb:index');
         
