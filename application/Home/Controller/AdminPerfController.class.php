@@ -146,11 +146,11 @@ class AdminPerfController extends AdminbaseController {
         
         $broker = $this->BrokerDao->where('id=' . $bid)->find();
         $rank_id = $broker['rank_id'];
-        if($rank_id = 3) {
+        if($rank_id == 3) {
             $this->QuarterPerfDao->where('bid=' . $bid . ' AND year=' . $year . ' AND quarter=' . $quarter)->setInc('perf', $perf * 0.05);
-        } else if($rank_id = 4) {
+        } else if($rank_id == 4) {
             $this->QuarterPerfDao->where('bid=' . $bid . ' AND year=' . $year . ' AND quarter=' . $quarter)->setInc('perf', $perf * 0.10);
-        } else if($rank_id = 5) {
+        } else if($rank_id == 5) {
             $this->QuarterPerfDao->where('bid=' . $bid . ' AND year=' . $year . ' AND quarter=' . $quarter)->setInc('perf', $perf * 0.15);
         }
         
