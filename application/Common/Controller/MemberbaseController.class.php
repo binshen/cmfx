@@ -7,7 +7,7 @@ class MemberbaseController extends HomeBaseController{
 		parent::_initialize();
 		
 		$this->check_login();
-		$this->check_user();
+		//$this->check_user();
 	}
 	
 }
