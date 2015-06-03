@@ -146,12 +146,20 @@ class AdminPerfController extends AdminbaseController {
         
         $broker = $this->BrokerDao->where('id=' . $bid)->find();
         $rank_id = $broker['rank_id'];
-        if($rank_id == 3) {
-            $this->QuarterPerfDao->where('bid=' . $bid . ' AND year=' . $year . ' AND quarter=' . $quarter)->setInc('perf', $perf * 0.05);
-        } else if($rank_id == 4) {
-            $this->QuarterPerfDao->where('bid=' . $bid . ' AND year=' . $year . ' AND quarter=' . $quarter)->setInc('perf', $perf * 0.10);
-        } else if($rank_id == 5) {
-            $this->QuarterPerfDao->where('bid=' . $bid . ' AND year=' . $year . ' AND quarter=' . $quarter)->setInc('perf', $perf * 0.15);
+        
+        if($rank_id >= 3 && $rank_id <= 5) {
+            $QPerf = $this->QuarterPerfDao->where('bid=' . $bid . ' AND year=' . $year . ' AND quarter=' . $quarter)->find();
+            if(empty($QPerf)) {
+                $QPerf = array();
+                $QPerf['bid'] = $bid;
+                $QPerf['year'] = $year;
+                $QPerf['quarter'] = $quarter;
+                $QPerf['perf'] = $perf * 0.05 * ($rank_id - 2);
+                $this->QuarterPerfDao->save($QPerf);
+            } else {
+                $QPerf['perf'] += $perf * 0.05 * ($rank_id - 2);
+                $this->QuarterPerfDao->save($QPerf);
+            }
         }
         
         if($rank_id == 6) {
