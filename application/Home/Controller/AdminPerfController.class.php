@@ -155,7 +155,7 @@ class AdminPerfController extends AdminbaseController {
                 $QPerf['year'] = $year;
                 $QPerf['quarter'] = $quarter;
                 $QPerf['perf'] = $perf * 0.05 * ($rank_id - 2);
-                $this->QuarterPerfDao->save($QPerf);
+                $this->QuarterPerfDao->add($QPerf);
             } else {
                 $QPerf['perf'] += $perf * 0.05 * ($rank_id - 2);
                 $this->QuarterPerfDao->save($QPerf);
