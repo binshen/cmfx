@@ -1,79 +1,92 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>{$site_name}</title>
-<meta name="keywords" content="{$site_seo_keywords}" />
-<meta name="description" content="{$site_seo_description}">
+<title>我的业绩</title>
 <meta name="author" content="ThinkCMF">
 <tc_include file="Public:head" />
+<style>
+.control-label{
+	font-weight: bold;
+	float: left;
+	width: 70px;
+}
+</style>
 </head>
-<body class="body-white" id="top">
-	<tc_include file="Public:nav" />
+<body class="body-white" id="top" style="padding-top:10px;">
 
 		<div class="container tc-main">
                 <div class="row">
-                    <div class="span3">
-	                    <tc_include file="Public:usernav"/>
-                    </div>
-                    <div class="span9">
-                           <div class="tabs">
-                               <ul class="nav nav-tabs">
-                                   <li class="active"><a href="#one" data-toggle="tab"><i class="fa fa-list-alt"></i> 修改资料</a></li>
-                               </ul>
+                
+                <div class="tabs offset2 span8">
                                <div class="tab-content">
                                    <div class="tab-pane active" id="one">
-                                   		<form class="form-horizontal J_ajaxForm" action="{:u('profile/edit_post')}" method="post">
-                                   			<div class="control-group">
-                                   				<label class="control-label" for="input-user_nicename">昵称</label>
-                                   				<div class="controls">
-                                   					<input type="text" id="input-user_nicename" placeholder="昵称" name="user_nicename" value="{$user_nicename}">
-                                   				</div>
-                                   			</div>
-                                   			<div class="control-group">
-                                   				<label class="control-label" for="input-sex">性别</label>
-                                   				<div class="controls">
-                                   					<php>
-	                                   				$sexs=array("0"=>"保密","1"=>"程序猿","2"=>"程序媛");
-	                                   				</php>
-                                   					<select id="input-sex" name="sex">
-                                   						<foreach name="sexs" item="vo">
-                                   						<php>$sexselected=$key==$sex?"selected":"";</php>
-                                   							<option value="{$key}" {$sexselected}>{$vo}</option>
-                                   						</foreach>
-                                   					</select>
-                                   				</div>
-                                   			</div>
-                                   			<div class="control-group">
-                                   				<label class="control-label" for="input-birthday">生日</label>
-                                   				<div class="controls">
-                                   					<input class="J_date" type="text" id="input-birthday" placeholder="2013-01-04" name="birthday" value="{$birthday}">
-                                   				</div>
-                                   			</div>
-                                   			<div class="control-group">
-                                   				<label class="control-label" for="input-user_url">个人网址</label>
-                                   				<div class="controls">
-                                   					<input type="text" id="input-user_url" placeholder="http://thinkcmf.com" name="user_url" value="{$user_url}">
-                                   				</div>
-                                   			</div>
-                                   			<div class="control-group">
-                                   				<label class="control-label" for="input-signature">个性签名</label>
-                                   				<div class="controls">
-                                   					<textarea id="input-signature" placeholder="个性签名" name="signature">{$signature}</textarea>
-                                   				</div>
-                                   			</div>
-                                   			<div class="control-group">
-                                   				<div class="controls">
-                                   					<button type="submit" class="btn J_ajax_submit_btn">保存</button>
-                                   				</div>
-                                   			</div>
-                                   		</form>
+							          	<div class="span3">
+					               			<div class="control-group">
+					               				<label class="control-label" for="input-user_nicename" style="width:100px;">房产类型:</label>
+					               				<div class="controls">
+					               					{$tname}
+					               				</div>
+					               			</div>
+					               			<div class="control-group">
+					               				<label class="control-label" for="input-sex" style="width:100px;">楼盘:</label>
+					               				<div class="controls">
+					               					{$pname}
+					               				</div>
+					               			</div>
+					               			<div class="control-group">
+					               				<label class="control-label" for="input-birthday" style="width:100px;">日期:</label>
+					               				<div class="controls">
+					               					{$date}
+					               				</div>
+					               			</div>
+					               			<div class="control-group">
+					               				<label class="control-label" for="input-user_url" style="width:100px;">房号:</label>
+					               				<div class="controls">
+					               					{$num}
+					               				</div>
+					               			</div>
+					               			<div class="control-group">
+					               				<label class="control-label" for="input-signature" style="width:100px;">中介费:</label>
+					               				<div class="controls">
+					               					{$agency}元
+					               				</div>
+					               			</div>
+					               			<div class="control-group">
+					               				<label class="control-label" for="input-signature" style="width:100px;">评估费:</label>
+					               				<div class="controls">
+					               					{$estimate|default=0}元
+					               				</div>
+					               			</div>
+					               			<div class="control-group">
+					               				<label class="control-label" for="input-signature" style="width:100px;">贷款服务费:</label>
+					               				<div class="controls">
+					               					{$service|default=0}元
+					               				</div>
+					               			</div>
+					               			<div class="control-group">
+					               				<label class="control-label" for="input-signature" style="width:100px;">其他费用:</label>
+					               				<div class="controls">
+					               					{$others|default=0}元
+					               				</div>
+					               			</div>
+					               			<div class="control-group">
+					               				<label class="control-label" for="input-signature" style="width:100px;">佣金:</label>
+					               				<div class="controls">
+					               					{$bkg}元
+					               				</div>
+					               			</div>
+					               			<div class="control-group">
+					               				<label class="control-label" for="input-signature" style="width:100px;">备注:</label>
+					               				<div class="controls">
+					               					{$comment}
+					               				</div>
+					               			</div>
+					               		</div>
                                    </div>
                                </div>							
-                           </div>
-                    </div>
+                 </div>
                 </div>
 
-		<tc_include file="Public:footer" />
 
 	</div>
 	<!-- /container -->

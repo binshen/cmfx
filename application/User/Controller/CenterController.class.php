@@ -14,9 +14,16 @@ class CenterController extends MemberbaseController {
 	}
     //会员中心
 	public function index() {
-		$userid=sp_get_current_userid();
-		$user=$this->users_model->where(array("id"=>$userid))->find();
-		$this->assign($user);
+		//$userid=sp_get_current_userid();
+		//$user=$this->users_model->where(array("id"=>$userid))->find();
+		$user_s = $_SESSION["user"];
+		$users_model=D('Home/Broker');
+		$result = $users_model->join("sd_rank on sd_broker.rank_id=sd_rank.id")
+					->field("sd_broker.*,sd_rank.name rank_name")
+					->where('sd_broker.id='.$user_s['id'])
+					->find();
+		
+		$this->assign($result);
     	$this->display(':center');
     }
 }

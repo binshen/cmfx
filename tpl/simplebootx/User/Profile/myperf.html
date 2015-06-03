@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>{$site_name}</title>
+<meta name="keywords" content="{$site_seo_keywords}" />
+<meta name="description" content="{$site_seo_description}">
+<meta name="author" content="ThinkCMF">
+<tc_include file="Public:head" />
+</head>
+
+<body class="body-white" id="top">
+	<tc_include file="Public:nav" />
+		<div class="container tc-main">
+                <div class="row">
+                    <div class="span3">
+	                    <tc_include file="Public:usernav"/>
+                    </div>
+                    <div class="span9">
+                           <div class="tabs">
+                               <ul class="nav nav-tabs">
+                                   <li class="active"><a href="#one" data-toggle="tab"><i class="fa fa-user"></i> 我的业绩</a></li>
+                               </ul>
+                               
+                               <form class="well form-search" method="post" id="cid_form" action="{:u('user/profile/myperf')}">
+									<div class="search_type cc mb10">
+										<div class="mb10">
+											楼盘：
+											<select class="select_2" name="project" id="project">
+												<option value="">- 选择楼盘 -</option>
+												<volist name="projectList" id="vo">
+													<php>$selected=$vo['id']===$project?"selected":"";</php>
+													<option value="{$vo.id}" {$selected}>{$vo.name}</option>
+												</volist>
+											</select>&nbsp;&nbsp;
+											月份：
+											<input type="text" name="date" id="date" class="input" style="width:80px;" value="{$date}" maxlength="6" />&nbsp;&nbsp;
+											<input class="btn btn-primary btn-big" type="submit" value="搜索">
+											<input class="btn btn-primary btn-big" type="button" value="清除" id="btnClear">
+										</div>
+									</div>
+								</form>
+                               
+                               <div class="tab-content">
+                                   <div class="tab-pane active" id="one">
+                                   		<table class="table table-bordered table-striped table-hover">
+									    <thead>
+									      <tr>
+									        <th>楼盘</th>
+									        <th>日期</th>
+									        <th>房号</th>
+									        <th>业绩</th>
+									        <th>佣金</th>
+									        <th>操作</th>
+									      </tr>
+									    </thead>
+									    <tbody>
+									    <foreach name="perfList" item="vo">
+									      <tr>
+									        <td>{$vo.pname}</td>
+									        <td>{$vo.date}</td>
+									        <td>{$vo.num}</td>
+									        <td>{$vo.perf}</td>
+									        <td>{$vo.bkg}</td>
+									        <td><a href="{:U('user/profile/edit', array('id' => $vo['id']))}" class="J_dialog" title="业绩详情">查看</a></td>
+									      </tr>
+									    </foreach>
+									    </tbody>
+									  </table>
+                                   </div>
+                               </div>							
+                           </div>
+                    </div>
+                </div>
+
+		<tc_include file="Public:footer" />
+
+	</div>
+	<!-- /container -->
+
+	<tc_include file="Public:scripts" />
+</body>
+<script>
+setCookie('refersh_time', 0);
+function refersh_window() {
+    var refersh_time = getCookie('refersh_time');
+    if (refersh_time == 1) {
+        window.location.reload();
+    }
+}
+setInterval(function(){
+	refersh_window()
+}, 2000);
+
+$(function() {
+	$("#btnClear").click(function() {
+		$("#broker").val("");
+		$("#project").val("");
+		$("#date").val("");
+	});
+});
+</script>
+</html>

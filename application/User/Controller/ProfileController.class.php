@@ -10,16 +10,15 @@ class ProfileController extends MemberbaseController {
 	protected $users_model;
 	function _initialize(){
 		parent::_initialize();
-		$this->users_model=D("Common/Users");
+		$this->users_model=D("Home/Broker");
+		$this->Dao = D("Home/Perf");
+		$this->ProjectDao = D("Home/Project");
+		$this->BrokerDao = D("Home/Broker");
+		$this->TypeDao = D("Home/Type");
+		$this->PayMngDao = D("Home/PayMng");
+		$this->QuarterPerfDao =D("Home/QuarterPerf");
 	}
 	
-    //编辑用户资料
-	public function edit() {
-		$userid=sp_get_current_userid();
-		$user=$this->users_model->where(array("id"=>$userid))->find();
-		$this->assign($user);
-    	$this->display();
-    }
     
     public function edit_post() {
     	if(IS_POST){
@@ -55,16 +54,21 @@ class ProfileController extends MemberbaseController {
     		if(empty($_POST['password'])){
     			$this->error("新密码不能为空！");
     		}
+    		
+    		$user = $_SESSION["user"];
+    		$uid = $user['id'];
+    		
     		$uid=sp_get_current_userid();
     		$admin=$this->users_model->where("id=$uid")->find();
     		$old_password=$_POST['old_password'];
     		$password=$_POST['password'];
-    		if(sp_password($old_password)==$admin['user_pass']){
+    		
+    		if(sha1($old_password)==$admin['password']){
     			if($_POST['password']==$_POST['repassword']){
-    				if($admin['user_pass']==sp_password($password)){
+    				if($admin['password']==sha1($password)){
     					$this->error("新密码不能和原始密码相同！");
     				}else{
-    					$data['user_pass']=sp_password($password);
+    					$data['password']=sha1($password);
     					$data['id']=$uid;
     					$r=$this->users_model->save($data);
     					if ($r!==false) {
@@ -178,6 +182,68 @@ class ProfileController extends MemberbaseController {
     		}
     		
     	}
+    }
+    
+    function myperf(){
+    	$user = $_SESSION['user'];
+    	$bid= $user['id'];
+    	$map = array(
+    			'bid'=>$bid
+    	);
+    	if(IS_POST) {
+    		$project = I('post.project');
+    		if(!empty($project)) {
+    			$map['pid'] = $project;
+    		}
+    	
+    		$date = I('post.date');
+    		if(!empty($date)) {
+    			$map["DATE_FORMAT(sd_perf.date,'%Y%m')"] = $date;
+    		}
+    	
+    		$this->assign('broker', $broker);
+    		$this->assign('project', $project);
+    		$this->assign('date', $date);
+    	}
+    	
+    	$count = $this->Dao->where($map)->count();
+    	$page = $this->page($count, 20);
+    	
+    	$perfList = $this->Dao
+    	->join("sd_type ON sd_type.id = sd_perf.tid")
+    	->join("sd_project ON sd_project.id = sd_perf.pid", 'left')
+    	->join("sd_broker ON sd_broker.id = sd_perf.bid", 'left')
+    	->field("sd_perf.*, sd_type.name AS tname, sd_project.name AS pname, sd_broker.name AS bname, sd_type.discount, sd_perf.date")
+    	->where($map)
+    	->order("sd_perf.date DESC")
+    	->limit($page->firstRow . ',' . $page->listRows)
+    	->select();
+    	
+    	$this->assign("page", $page->show('Admin'));
+    	
+    	$projectList = $this->ProjectDao->order('name')->select();
+    	$this->assign('projectList', $projectList);
+    	
+    	$brokerList = $this->BrokerDao->where('status=1')->order('name')->select();
+    	$this->assign('brokerList', $brokerList);
+    	
+    	$this->assign('perfList', $perfList);
+    	$this->display();
+    }
+    
+    function edit(){
+    	        $id = I('get.id', 0, 'intval');
+        $perf = $this->Dao
+            ->join('sd_broker ON sd_broker.id = sd_perf.bid')
+            ->join('sd_rank ON sd_rank.id = sd_broker.rank_id', 'left')
+            ->join('sd_project ON sd_perf.pid = sd_project.id', 'left')
+            ->join('sd_type ON sd_perf.tid = sd_type.id', 'left')
+            ->field('sd_perf.*, sd_rank.name AS rank_name,sd_project.name pname,sd_type.name tname')
+            ->where('sd_perf.id=' . $id)
+            ->find();
+        $this->assign($perf);
+        
+        $this->display();
     }
     
     
