@@ -92,7 +92,7 @@ class AdminPerfController extends AdminbaseController {
         $perf = $this->Dao
             ->join('sd_broker ON sd_broker.id = sd_perf.bid')
             ->join('sd_rank ON sd_rank.id = sd_broker.rank_id', 'left')
-            ->field('sd_perf.*, sd_rank.name AS rank_name')
+            ->field('sd_perf.*, sd_rank.name AS rank_name, sd_rank.id AS rank_id')
             ->where('sd_perf.id=' . $id)
             ->find();
         $this->assign($perf);
@@ -110,12 +110,11 @@ class AdminPerfController extends AdminbaseController {
             $discount = $this->TypeDao->getFieldById($_POST['tid'], 'discount');
             $_POST['perf'] = empty($discount) ? $perf : $perf * $discount;
             
-            $rank_id = I('post.rank_id', 0, "intval");
-            if($rank_id == 3 || $rank_id == 4 || $rank_id == 5) {
+            $rank_id = (int)$_POST['rank_id'];
+            if($rank_id >= 3 && $rank_id <= 5) {
                 $_POST['q_perf'] = $_POST['perf'] * 0.05 * ($rank_id - 2);
                 $_POST['y_perf'] = $_POST['perf'] * 0.05;
             }
-            
             if(empty($_POST['id'])) {
                 if ($this->Dao->create()) {
                     if ($this->Dao->add() !== false) {
