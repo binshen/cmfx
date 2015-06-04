@@ -118,7 +118,7 @@ class AdminPaybController extends AdminbaseController {
 		
 		
 		foreach($id as $k=>$v){
-			if($pay_arr[$k]){
+			if($pay_arr[$k] > 0){
 				$pay = $pay_arr[$k];
 				$pay_all = $pay_all_arr[$k];
 				$payd = $payd_arr[$k];
