@@ -109,6 +109,13 @@ class AdminPerfController extends AdminbaseController {
             $perf = floatval($_POST['agency']) + floatval($_POST['estimate']) + floatval($_POST['service']) + floatval($_POST['others']);
             $discount = $this->TypeDao->getFieldById($_POST['tid'], 'discount');
             $_POST['perf'] = empty($discount) ? $perf : $perf * $discount;
+            
+            $rank_id = I('post.rank_id', 0, "intval");
+            if($rank_id == 3 || $rank_id == 4 || $rank_id == 5) {
+                $_POST['q_perf'] = $_POST['perf'] * 0.05 * ($rank_id - 2);
+                $_POST['y_perf'] = $_POST['perf'] * 0.05;
+            }
+            
             if(empty($_POST['id'])) {
                 if ($this->Dao->create()) {
                     if ($this->Dao->add() !== false) {
@@ -147,20 +154,20 @@ class AdminPerfController extends AdminbaseController {
         $broker = $this->BrokerDao->where('id=' . $bid)->find();
         $rank_id = $broker['rank_id'];
         
-        if($rank_id >= 3 && $rank_id <= 5) {
-            $QPerf = $this->QuarterPerfDao->where('bid=' . $bid . ' AND year=' . $year . ' AND quarter=' . $quarter)->find();
-            if(empty($QPerf)) {
-                $QPerf = array();
-                $QPerf['bid'] = $bid;
-                $QPerf['year'] = $year;
-                $QPerf['quarter'] = $quarter;
-                $QPerf['perf'] = $perf * 0.05 * ($rank_id - 2);
-                $this->QuarterPerfDao->add($QPerf);
-            } else {
-                $QPerf['perf'] += $perf * 0.05 * ($rank_id - 2);
-                $this->QuarterPerfDao->save($QPerf);
-            }
-        }
+//         if($rank_id >= 3 && $rank_id <= 5) {
+//             $QPerf = $this->QuarterPerfDao->where('bid=' . $bid . ' AND year=' . $year . ' AND quarter=' . $quarter)->find();
+//             if(empty($QPerf)) {
+//                 $QPerf = array();
+//                 $QPerf['bid'] = $bid;
+//                 $QPerf['year'] = $year;
+//                 $QPerf['quarter'] = $quarter;
+//                 $QPerf['perf'] = $perf * 0.05 * ($rank_id - 2);
+//                 $this->QuarterPerfDao->add($QPerf);
+//             } else {
+//                 $QPerf['perf'] += $perf * 0.05 * ($rank_id - 2);
+//                 $this->QuarterPerfDao->save($QPerf);
+//             }
+//         }
         
         if($rank_id == 6) {
             $parent_id = $bid;
@@ -177,11 +184,14 @@ class AdminPerfController extends AdminbaseController {
         $payMng = $this->PayMngDao->where($data)->find();        
         if(empty($payMng)) {
             $data['bonus'] = floatval($perf) * 0.3;
+            $data['type'] = 1;
             $this->PayMngDao->add($data);
-        } else {
-            $payMng['bonus'] = floatval($perf) * 0.3;
-            $this->PayMngDao->save($payMng);
-        }
+        } 
+//         else {
+//             $payMng['bonus'] = floatval($perf) * 0.3;
+//             $payMng['type'] = 1;
+//             $this->PayMngDao->save($payMng);
+//         }
         
         $parent_id = $broker['parent_id'];
         if($parent_id <= 0) return;
@@ -191,12 +201,15 @@ class AdminPerfController extends AdminbaseController {
         
         $data['sid'] = $broker['parent_id'];
         $payMng = $this->PayMngDao->where($data)->find();
-        $data['bonus'] = 0;
         if(empty($payMng)) {
+            $data['type'] = 2;
+            $data['bonus'] = 0;
             $this->PayMngDao->add($data);
-        } else {
-            $this->PayMngDao->save($payMng);
-        }
+        } 
+//         else {
+//             $payMng['type'] = 2;
+//             $this->PayMngDao->save($payMng);
+//         }
     }
     
     function delete() {
@@ -273,6 +286,7 @@ class AdminPerfController extends AdminbaseController {
         $result = array();
         $result['bkg'] = getBrokerageByRank($rank_id, $total+$perfTotal) - $bkgTotal;
         $result['rank'] = $rank_name;
+        $result['rank_id'] = $rank_id;
         echo json_encode($result);
     }
     
