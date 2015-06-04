@@ -1,0 +1,1 @@
+<?phpnamespace Home\Controller;use Common\Controller\AdminbaseController;class AdminPerfYearController extends AdminbaseController {        function _initialize() {        parent::_initialize();    }        function index() {            $this->display();    }}
