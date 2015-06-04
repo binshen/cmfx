@@ -8,7 +8,7 @@
 		 	<table class="table table-hover table-bordered table-list">
           	<thead>
           		<tr>
-	            	<th colspan="4"><span style="color:red;">{$name}--{$date}<input type="hidden" name="date" value="{$date}"></span></th>
+	            	<th colspan="4"><span style="color:red;">{$name}--{$date}<input type="hidden" name="date_a" value="{$date}"></span></th>
 	            	<th>
 	            	<php>
 	            	if($status == 2) {
@@ -36,6 +36,8 @@
         		<input type="hidden" name="bonus[]" value="{$vo.bonus}">
         		<input type="hidden" name="payd[]" value="{$vo.payd}">
         		<input type="hidden" name="bid[]" value="{$vo.bid}">
+        		<input type="hidden" name="q_perf[]" value="{$vo.q_perf}">
+        		<input type="hidden" name="y_perf[]" value="{$vo.y_perf}">
         		
         		</td>
         		<td><font color="green" size="3"><a href="javascript:;" onclick="c_bkg(this);">{$vo.bkg}</a><input type="hidden" name="pay_all[]" value="{$vo.bkg}"></font></td>

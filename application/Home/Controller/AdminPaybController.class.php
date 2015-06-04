@@ -92,12 +92,12 @@ class AdminPaybController extends AdminbaseController {
 				join sd_rank on b.rank_id = sd_rank.id
 				where DATE_FORMAT(a.date,'%Y-%m') = '".$date."' and a.pid = ".$pid;*/
     	
-    	$sql = "select c.`name` bname, b.bkg, b.payd, b.agency, b.id,d.name rname,b.num,b.perf,b.bid,c.parent_id,a.bonus
+    	$sql = "select c.`name` bname, b.bkg, b.payd, b.agency, b.id,d.name rname,b.num,b.perf,b.bid,c.parent_id,a.bonus,b.q_perf,b.y_perf
     			from sd_pay_mng a 
     			left join sd_perf b on a.pid=b.id 
     			left join sd_broker c on b.bid = c.id
     			left join sd_rank d on c.rank_id = d.id
-    			where DATE_FORMAT(b.date,'%Y-%m')='".$date."' and b.pid = ".$pid;
+    			where DATE_FORMAT(b.date,'%Y-%m')='".$date."' and a.type=1 and b.pid = ".$pid;
     	
     	$payb = $Model->query($sql);
     	$this->assign('payb', $payb);
@@ -110,9 +110,11 @@ class AdminPaybController extends AdminbaseController {
 		$pay_arr = $_POST['pay'];
 		$pay_all_arr = $_POST['pay_all'];
 		$bid_arr = $_POST['bid'];
-		$date = $_POST['date'];
+		$date = $_POST['date_a'];
 		$payd_arr = $_POST['payd'];
 		$bonus_arr = $_POST['bonus'];
+		$q_perf_arr = $_POST['q_perf'];
+		$y_perf_arr = $_POST['y_perf'];
 		
 		
 		foreach($id as $k=>$v){
@@ -121,8 +123,11 @@ class AdminPaybController extends AdminbaseController {
 				$pay_all = $pay_all_arr[$k];
 				$payd = $payd_arr[$k];
 				$bonus = $bonus_arr[$k];
+				$q_perf = $q_perf_arr[$k];
+				$y_perf = $y_perf_arr[$k];
 				
 				$this->Daopay->where('pid='.$v)->save(array('pay'=>($payd+$pay)/$pay_all*$bonus));
+				$this->Daoperf->where('id='.$v)->save(array('q_payd'=>($payd+$pay)/$pay_all*$q_perf,'y_payd'=>($payd+$pay)/$pay_all*$y_perf));
 				$this->Daoperf->where('id='.$v)->setInc('payd',$pay);
 				$log = array(
 						'pid'=>$v,
