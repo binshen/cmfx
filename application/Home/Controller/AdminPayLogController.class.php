@@ -17,9 +17,9 @@ class AdminPayLogController extends AdminbaseController {
     function index(){
     	$map = array();
     	if(IS_POST) {
-    		$project = I('post.broker');
-    		if(!empty($project)) {
-    			$map['sd_pay_log.pid'] = $project;
+    		$broker = I('post.broker');
+    		if(!empty($broker)) {
+    			$map['sd_pay_log.bid'] = $broker;
     		}
     	
     		$date = I('post.date');
@@ -27,7 +27,7 @@ class AdminPayLogController extends AdminbaseController {
     			$map['sd_pay_log.date'] = $date;
     		}
     	
-    		$this->assign('broker', $project);
+    		$this->assign('broker', $broker);
     		$this->assign('date', $date);
     	}
     	
