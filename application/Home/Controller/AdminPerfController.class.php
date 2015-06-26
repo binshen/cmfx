@@ -90,9 +90,8 @@ class AdminPerfController extends AdminbaseController {
         
         $id = I('get.id', 0, 'intval');
         $perf = $this->Dao
-            ->join('sd_broker ON sd_broker.id = sd_perf.bid')
-            ->join('sd_rank ON sd_rank.id = sd_broker.rank_id', 'left')
-            ->field('sd_perf.*, sd_rank.name AS rank_name, sd_rank.id AS rank_id')
+            ->join('sd_rank ON sd_rank.id = sd_perf.rank_id', 'left')
+            ->field('sd_perf.*, sd_rank.name AS rank_name')
             ->where('sd_perf.id=' . $id)
             ->find();
         $this->assign($perf);
@@ -130,7 +129,7 @@ class AdminPerfController extends AdminbaseController {
             } else {
                 if ($this->Dao->create()) {
                     if ($this->Dao->save()!==false) {
-                        $this->calculateManagerPerf($_POST['id'], $_POST['perf']);
+                        $this->calculateManagerPerf($_POST['id']);
                         
                         $this->success("修改成功！", U("AdminPerf/index"), true);
                     } else {
@@ -150,28 +149,8 @@ class AdminPerfController extends AdminbaseController {
         $year = date('Y', strtotime($date));
         $quarter = ceil(date('m', strtotime($date)) / 3);
         
-        $broker = $this->BrokerDao->where('id=' . $bid)->find();
-        $rank_id = $broker['rank_id'];
-        
-//         if($rank_id >= 3 && $rank_id <= 5) {
-//             $QPerf = $this->QuarterPerfDao->where('bid=' . $bid . ' AND year=' . $year . ' AND quarter=' . $quarter)->find();
-//             if(empty($QPerf)) {
-//                 $QPerf = array();
-//                 $QPerf['bid'] = $bid;
-//                 $QPerf['year'] = $year;
-//                 $QPerf['quarter'] = $quarter;
-//                 $QPerf['perf'] = $perf * 0.05 * ($rank_id - 2);
-//                 $this->QuarterPerfDao->add($QPerf);
-//             } else {
-//                 $QPerf['perf'] += $perf * 0.05 * ($rank_id - 2);
-//                 $this->QuarterPerfDao->save($QPerf);
-//             }
-//         }
-        
         if($rank_id == 6) {
             $parent_id = $bid;
-        } else {
-            $parent_id = $broker['parent_id'];
         }
         if($parent_id <= 0) return;
         
@@ -185,30 +164,17 @@ class AdminPerfController extends AdminbaseController {
             $data['bonus'] = floatval($perf) * 0.3;
             $data['type'] = 1;
             $this->PayMngDao->add($data);
-        } 
-//         else {
-//             $payMng['bonus'] = floatval($perf) * 0.3;
-//             $payMng['type'] = 1;
-//             $this->PayMngDao->save($payMng);
-//         }
+        }
         
-        $parent_id = $broker['parent_id'];
-        if($parent_id <= 0) return;
+        if($parent_parent_id < 0) return;
         
-        $broker = $this->BrokerDao->field('parent_id')->where('id=' . $parent_id)->find();
-        if($broker['parent_id'] <= 0) return;
-        
-        $data['sid'] = $broker['parent_id'];
+        $data['sid'] = $parent_parent_id;
         $payMng = $this->PayMngDao->where($data)->find();
         if(empty($payMng)) {
             $data['type'] = 2;
             $data['bonus'] = 0;
             $this->PayMngDao->add($data);
-        } 
-//         else {
-//             $payMng['type'] = 2;
-//             $this->PayMngDao->save($payMng);
-//         }
+        }
     }
     
     function delete() {
@@ -276,16 +242,24 @@ class AdminPerfController extends AdminbaseController {
         
         $broker = $this->BrokerDao
             ->join('sd_rank ON sd_rank.id = sd_broker.rank_id', 'left')
-            ->field('sd_broker.rank_id, sd_rank.name AS rank_name')
+            ->field('sd_broker.rank_id, sd_rank.name AS rank_name, sd_broker.parent_id')
             ->where('sd_broker.id=' . $bid)
             ->find();
-        
         $rank_id = $broker['rank_id'];
         $rank_name = $broker['rank_name'];
+        $parent_id = $broker['parent_id'];
+        if($rank_id == 6) {
+        	$parent_parent_id = -1;
+        } else {
+        	$parent_parent_id = $this->BrokerDao->getFieldById($parent_id, 'parent_id');
+        }
+        
         $result = array();
         $result['bkg'] = getBrokerageByRank($rank_id, $total+$perfTotal) - $bkgTotal;
         $result['rank'] = $rank_name;
         $result['rank_id'] = $rank_id;
+        $result['parent_id'] = $parent_id;
+        $result['parent_parent_id'] = $parent_parent_id;
         echo json_encode($result);
     }
     
