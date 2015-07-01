@@ -15,13 +15,25 @@ class AdminBrokerController extends AdminbaseController {
     }
     
     function index(){
-    	$count=$this->Dao->count();
+    	
+    	$map = array();
+    	if(IS_POST) {
+    		$broker = I('post.broker');
+    		if(!empty($broker)) {
+    			$map['sd_broker.name'] = array('like','%' . $broker . '%');
+    		}
+    		$this->assign('broker', $broker);
+    	}
+    	
+    	$count=$this->Dao->where($map)->count();
     	$page = $this->page($count, 20);
     	
         $brokerList = $this->Dao
             ->join('sd_rank ON sd_broker.rank_id = sd_rank.id', 'left')
             ->field('sd_broker.*, sd_rank.name AS rank')
+            ->where($map)
             ->limit($page->firstRow . ',' . $page->listRows)
+            ->order('sd_broker.date DESC')
             ->select();
         
         $this->assign('managerList', $this->getManagerList());
