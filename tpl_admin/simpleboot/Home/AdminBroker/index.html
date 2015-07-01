@@ -81,5 +81,11 @@ function refersh_window() {
 setInterval(function(){
 	refersh_window()
 }, 2000);
+
+$(function() {
+	$("#btnClear").click(function() {
+		$("#broker").val("");
+	});
+});
 </script>
 </body>
