@@ -242,11 +242,17 @@ class AdminPerfController extends AdminbaseController {
         
         $broker = $this->BrokerDao
             ->join('sd_rank ON sd_rank.id = sd_broker.rank_id', 'left')
-            ->field('sd_broker.rank_id, sd_rank.name AS rank_name, sd_broker.parent_id')
+            ->join('sd_rank AS sd_rank2 ON sd_rank2.id = sd_broker.flag', 'left')
+            ->field('sd_broker.rank_id, sd_rank.name AS rank_name, sd_broker.parent_id, sd_broker.flag AS rank_id2, sd_rank2.name AS rank_name2 ')
             ->where('sd_broker.id=' . $bid)
             ->find();
-        $rank_id = $broker['rank_id'];
-        $rank_name = $broker['rank_name'];
+        if(!empty($broker['rank_id2'])) {
+        	$rank_id = $broker['rank_id2'];
+        	$rank_name = $broker['rank_name2'] . "(储备)";
+        } else {
+        	$rank_id = $broker['rank_id'];
+        	$rank_name = $broker['rank_name'];
+        }
         $parent_id = $broker['parent_id'];
         if($rank_id == 6) {
         	$parent_parent_id = -1;
