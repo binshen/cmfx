@@ -283,10 +283,10 @@ class AdminPerfController extends AdminbaseController {
             $this->error("日期格式不正确");
             return false;
         }
-        if(empty($total)) {
-            $this->error("请输入楼盘成交价");
-            return false;
-        }
+//         if(empty($total)) {
+//             $this->error("请输入楼盘成交价");
+//             return false;
+//         }
         if(!is_numeric($total)) {
             $this->error("楼盘成交价格式不正确");
             return false;
