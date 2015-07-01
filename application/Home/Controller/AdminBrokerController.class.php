@@ -67,6 +67,19 @@ class AdminBrokerController extends AdminbaseController {
     
     function edit_post() {
     	
+    	if(empty($_POST['name'])) {
+    		$this->error("请输入姓名");
+    		return;
+    	}
+    	if(empty($_POST['tel'])) {
+    		$this->error("请输入联系方式");
+    		return;
+    	}
+    	if(empty($_POST['date'])) {
+    		$this->error("请输入入职日期");
+    		return;
+    	}
+    	
     	if(!isset($_POST['flagBox'])) {
     		$_POST['flag'] = 0;
     		unset($_POST['flagBox']);
