@@ -54,6 +54,11 @@ class AdminBrokerController extends AdminbaseController {
     }
     
     function edit_post() {
+    	
+    	if(!isset($_POST['flagBox'])) {
+    		$_POST['flag'] = 0;
+    		unset($_POST['flagBox']);
+    	}
         if(empty($_POST['id'])) {
             if ($this->Dao->create()) {
                 if ($this->Dao->add()!==false) {

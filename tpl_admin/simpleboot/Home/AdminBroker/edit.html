@@ -36,6 +36,24 @@
 										<span class="must_red">*</span>
 									</td>
 								</tr>
+								<tr id="reserved_tr" style="display:none; height:35px;">
+									<td>储备店东:</td>
+									<td>
+										<input id="flagBox" name="flagBox" type="checkbox" value="1" onclick="flag_click(this);">
+										<div id="flagDiv" style="display:none">
+											<span>当前等级：</span>
+											<select id="flagSelect" name="flag" style="width:128px;">
+												<volist name="rankList" id="vo">
+													<php>
+														if($vo['id'] == 6) continue;
+														$selected=$vo['id']===$flag?"selected":"";
+													</php>
+													<option value="{$vo.id}" {$selected}>{$vo.name}</option>
+												</volist>
+											</select>
+										</div>
+									</td>
+								</tr>
 								<tr id="parent_id_tr">
 									<td>上级:</td>
 									<td>
@@ -74,18 +92,27 @@
 	</div>
 	<script type="text/javascript" src="__ROOT__/statics/js/common.js"></script>
 	<script>
-	/*
-	function rank_change(obj){
-		if($(obj).val() == '6'){
-			$("#parent_id_tr").hide();
-		}else{
-			$("#parent_id_tr").show();
+		function rank_change(obj){
+			if($(obj).val() == '6'){
+				$("#reserved_tr").show();
+			}else{
+				$("#reserved_tr").hide();
+			}
 		}
-	}
-	<php>if($rank_id == 6):</php>
-	$("#parent_id_tr").hide();
-	<php>endif;</php>
-	*/
+		function flag_click(obj){
+			if($(obj).prop("checked")){
+				$("#flagDiv").css("display", "inline");
+			} else {
+				$("#flagDiv").css("display", "none");
+			}
+		}
+		<php>if($rank_id == 6):</php>
+			$("#reserved_tr").show();
+		<php>endif;</php>
+		<php>if($flag > 0):</php>
+			$("#flagBox").prop('checked', true);
+			$("#flagDiv").css("display", "inline");
+		<php>endif;</php>
 	</script>
 </body>
 </html>
