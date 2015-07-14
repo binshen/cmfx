@@ -33,14 +33,15 @@ class AdminPaybController extends AdminbaseController {
     		$this->assign('date', $date);
     	}
     	
-    	$count = $this->Daoperf
+    	$paybList = $this->Daoperf
 	    	->join("sd_project ON sd_perf.pid = sd_project.id","left")
-        	->field("1")
-	        ->group("pid,date")
-	        ->where($map)
-	        ->select();
+	    	->field("sd_perf.*, sum(bkg) pay,sum(payd) payd,name,DATE_FORMAT(date,'%Y-%m') date")
+	    	->where($map)
+	    	->order("DATE_FORMAT(date,'%Y-%m') desc")
+	    	->group("pid,DATE_FORMAT(date,'%Y-%m')")
+	    	->select();
         
-    	$page = $this->page(count($count), 20);
+    	$page = $this->page(count($paybList), 20);
     	
         $paybList = $this->Daoperf
         	->join("sd_project ON sd_perf.pid = sd_project.id","left")
