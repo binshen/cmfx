@@ -5,12 +5,22 @@
      	<li class="active"><a href="{:U('AdminBroker/index')}">所有经纪人</a></li>
      	<li><a href="{:U('AdminBroker/add')}">添加经纪人</a></li>
   	</ul>
+  	<form class="well form-search" method="post" id="cid_form" action="{:U('AdminBroker/index')}">
+		<div class="search_type cc mb10">
+			<div class="mb10">
+				业务员姓名：
+				<input type="text" name="broker" id="broker" class="input" value="{$broker}" />&nbsp;&nbsp;
+				<input class="btn btn-primary btn-big" type="submit" value="搜索">
+				<input class="btn btn-primary btn-big" type="button" value="清除" id="btnClear">
+			</div>
+		</div>
+	</form>
   	<form class="J_ajaxForm" action="" method="post">
       	<table class="table table-hover table-bordered table-list">
           	<thead>
 	          	<tr>
 	            	<th width="16"><label><input type="checkbox" class="J_check_all" data-direction="x" data-checklist="J_check_x"></label></th>
-	            	<th width="100">ID</th>
+	            	<th width="50">ID</th>
 	            	<th>姓名</th>
 	            	<th>联系方式</th>
 	            	<th>级别</th>
@@ -71,5 +81,11 @@ function refersh_window() {
 setInterval(function(){
 	refersh_window()
 }, 2000);
+
+$(function() {
+	$("#btnClear").click(function() {
+		$("#broker").val("");
+	});
+});
 </script>
 </body>
