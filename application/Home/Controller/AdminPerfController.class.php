@@ -26,25 +26,34 @@ class AdminPerfController extends AdminbaseController {
     
         $map = array();
         if(IS_POST) {
-            $broker = I('post.broker');
-            if(!empty($broker)) {
-                $map['bid'] = $broker;
-            }
-            
-            $project = I('post.project');
-            if(!empty($project)) {
-                $map['pid'] = $project;
-            }
-            
-            $date = I('post.date');
-            if(!empty($date)) {
-                $map["DATE_FORMAT(sd_perf.date,'%Y%m')"] = $date;
-            }
-            
-            $this->assign('broker', $broker);
-            $this->assign('project', $project);
-            $this->assign('date', $date);
+        	$broker = I('post.broker');
+        	$project = I('post.project');
+        	$date = I('post.date');
+        	
+            session('_broker', $broker);
+            session('_project', $project);
+            session('_date', $date);
+        } else {
+        	$broker = session('_broker');
+        	$project = session('_project');
+        	$date = session('_date');
         }
+        
+        if(!empty($broker)) {
+        	$map['bid'] = $broker;
+        }
+        
+        if(!empty($project)) {
+        	$map['pid'] = $project;
+        }
+        
+        if(!empty($date)) {
+        	$map["DATE_FORMAT(sd_perf.date,'%Y%m')"] = $date;
+        }
+        
+        $this->assign('broker', $broker);
+        $this->assign('project', $project);
+        $this->assign('date', $date);
         
         $count = $this->Dao->where($map)->count();
         $page = $this->page($count, 20);
