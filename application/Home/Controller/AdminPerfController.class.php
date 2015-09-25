@@ -224,7 +224,7 @@ class AdminPerfController extends AdminbaseController {
         $total = I('post.total', 0, 'floatval');
         $bid = I('post.id');
         $date = I('post.date');
-        
+        $pid = I('post.pid');
         $tid = I('post.tid', 0, 'intval');
         $discount = $this->TypeDao->getFieldById($tid, 'discount');
         
@@ -237,7 +237,7 @@ class AdminPerfController extends AdminbaseController {
 
         $perfObj = $this->Dao
             ->field('SUM(perf) AS total_perf, SUM(bkg) AS total_bkg')
-            ->where("bid=" . $bid . " AND YEAR(date)='" . $year . "' AND MONTH(date)='" . $month . "'")
+            ->where("bid=" . $bid . " AND YEAR(date)='" . $year . "' AND MONTH(date)='" . $month . "' AND id <" . $pid)
             ->find();
         
         $perfTotal = $perfObj['total_perf'];
