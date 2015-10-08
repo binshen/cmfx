@@ -235,9 +235,13 @@ class AdminPerfController extends AdminbaseController {
         $year = date('Y', strtotime($date));
         $month = date('n', strtotime($date));
 
+        $where = "bid=" . $bid . " AND YEAR(date)='" . $year . "' AND MONTH(date)='" . $month . "'";
+        if(!empty($pid)) {
+        	$where .= " AND id <" . $pid;
+        }
         $perfObj = $this->Dao
             ->field('SUM(perf) AS total_perf, SUM(bkg) AS total_bkg')
-            ->where("bid=" . $bid . " AND YEAR(date)='" . $year . "' AND MONTH(date)='" . $month . "' AND id <" . $pid)
+            ->where($where)
             ->find();
         
         $perfTotal = $perfObj['total_perf'];
